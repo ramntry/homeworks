@@ -15,6 +15,8 @@ public:
     BinarySearchTree *successor(int key) const;
     BinarySearchTree *predecessor(int key) const;
 
+    void symorder(void (*act)(int key));
+
 //    virtual void insert(BinarySearchTree *subtree);
     virtual void insert(int key);
 //    virtual void remove(BinarySearchTree *subtree);

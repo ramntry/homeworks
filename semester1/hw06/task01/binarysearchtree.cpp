@@ -102,3 +102,15 @@ int BinarySearchTree::max() const
         current = current->m_rightChild;
     return current->m_key;
 }
+
+
+void BinarySearchTree::symorder(void (*act)(int key))
+{
+    if (isEmpty())
+        return;
+    if (m_leftChild)
+        m_leftChild->symorder(act);
+    act(m_key);
+    if (m_rightChild)
+        m_rightChild->symorder(act);
+}

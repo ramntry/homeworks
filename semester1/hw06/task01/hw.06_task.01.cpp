@@ -18,6 +18,12 @@
 
 using namespace std;
 
+void print(int key)
+{
+    static int count = 0;
+    cout << count++ << ":\t" << key << endl;
+}
+
 int main()
 {
     BinarySearchTree t;
@@ -50,6 +56,9 @@ int main()
 
     BinarySearchTree t2(a, n);
     cout << t2.min() << ' ' << t2.max() << endl;
+
+    t2.symorder(print);
+    cout << endl;
 
     cout << "I'm a homework 06, task 01" << endl;
     return 0;
