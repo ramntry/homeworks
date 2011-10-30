@@ -17,7 +17,7 @@ using namespace std;
 
 int main()
 {
-    cout << "Homework 06, task 01" << endl;
+    cout << "I'm a homework 06, task 01" << endl;
     return 0;
 }
 
