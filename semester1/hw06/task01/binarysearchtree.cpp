@@ -13,6 +13,10 @@ BinarySearchTree::BinarySearchTree(int key) :
 {}
 
 BinarySearchTree *&BinarySearchTree::step(BinarySearchTree *node, int key) const
+/**
+ * Принимает решение по ключу, в какую сторону делать шаг в поиске. Возвращает
+ * ссылку на указатель на нужный узел - он становится доступным на изменение
+ */
 {
     if (key > node->m_key)
         return node->m_rightChild;
@@ -28,6 +32,7 @@ BinarySearchTree *BinarySearchTree::search(int key) const
 {
     if (this == m_leftChild)                 // Если дерево пусто
         return 0;
+
     BinarySearchTree *res = const_cast<BinarySearchTree *>(this);
     while (res && res->m_key != key)
         res = step(res, key);
@@ -60,7 +65,10 @@ void BinarySearchTree::insert(int key)
         return;
     }
     BinarySearchTree *pos = getParent(key);
-    BinarySearchTree *&child = pos ? step(pos, key) : pos;
-    if (pos && !child)                      // Если такого элемента еще нет
-        child = new BinarySearchTree(key);
+    if (pos)                                 // Если добавлямый элемент не в корне дерева
+    {
+        BinarySearchTree *&child = step(pos, key);
+        if (!child)                          // ... и не в соответсвующем узле
+            child = new BinarySearchTree(key);
+    }
 }
