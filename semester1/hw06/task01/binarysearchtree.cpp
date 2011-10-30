@@ -10,7 +10,6 @@ BinarySearchTree::BinarySearchTree(int key) :
     m_key(key),
     m_leftChild(0),
     m_rightChild(0)
-//    m_parent(parent)
 {}
 
 BinarySearchTree *&BinarySearchTree::step(BinarySearchTree *node, int key) const
