@@ -13,15 +13,20 @@
 
 #include <iostream>
 #include "binarysearchtree.h"
+#include <stdexcept>
+#include <cstdlib>
 
 using namespace std;
 
 int main()
 {
     BinarySearchTree t;
+    try { t.min(); }
+    catch (std::runtime_error e) { cerr << e.what() << endl; }
     cout << t.search(8) << endl;
 
     t.insert(6);
+    t.max();
     t.insert(6);
     t.insert(3);
     t.insert(5);
@@ -31,6 +36,20 @@ int main()
     t.insert(7);
 
     cout << t.search(8) << endl;
+
+    cout << t.min() << endl;
+    cout << t.max() << endl;
+
+    const int n = (1 << 4) - 1;
+    int * a = new int[n];
+    for (int i = 0; i < n; i++)
+        a[i] = rand() % (n * n);
+    for (int i = 0; i < n; i++)
+        cout << a[i] << ' ';
+    cout << endl;
+
+    BinarySearchTree t2(a, n);
+    cout << t2.min() << ' ' << t2.max() << endl;
 
     cout << "I'm a homework 06, task 01" << endl;
     return 0;

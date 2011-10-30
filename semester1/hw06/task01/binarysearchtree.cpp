@@ -1,4 +1,5 @@
 #include "binarysearchtree.h"
+#include <stdexcept>
 
 BinarySearchTree::BinarySearchTree() :
     m_key(0),
@@ -11,6 +12,15 @@ BinarySearchTree::BinarySearchTree(int key) :
     m_leftChild(0),
     m_rightChild(0)
 {}
+
+BinarySearchTree::BinarySearchTree(const int *array, int size) :
+    m_key(*array),
+    m_leftChild(0),
+    m_rightChild(0)
+{
+    for (int i = 1; i < size; i++)
+        insert(array[i]);
+}
 
 BinarySearchTree *&BinarySearchTree::step(BinarySearchTree *node, int key) const
 /**
@@ -30,7 +40,7 @@ BinarySearchTree *BinarySearchTree::search(int key) const
  * например, это образ метода has для множества или has_key для отображения и метода operator [] для отображения.
  */
 {
-    if (this == m_leftChild)                 // Если дерево пусто
+    if (isEmpty())
         return 0;
 
     BinarySearchTree *res = const_cast<BinarySearchTree *>(this);
@@ -58,7 +68,7 @@ BinarySearchTree *BinarySearchTree::getParent(int key) const
 
 void BinarySearchTree::insert(int key)
 {
-    if (this == m_leftChild)                 // Если дерево пусто
+    if (isEmpty())
     {
         m_key = key;
         m_leftChild = 0;
@@ -71,4 +81,24 @@ void BinarySearchTree::insert(int key)
         if (!child)                          // ... и не в соответсвующем узле
             child = new BinarySearchTree(key);
     }
+}
+
+int BinarySearchTree::min() const
+{
+    if (isEmpty())
+        throw std::runtime_error("Error in min(): BinarySearchTree is empty");
+    BinarySearchTree *current = const_cast<BinarySearchTree *>(this);
+    while (current->m_leftChild)
+        current = current->m_leftChild;
+    return current->m_key;
+}
+
+int BinarySearchTree::max() const
+{
+    if (isEmpty())
+        throw std::runtime_error("Error in max(): BinarySearchTree is empty");
+    BinarySearchTree *current = const_cast<BinarySearchTree *>(this);
+    while (current->m_rightChild)
+        current = current->m_rightChild;
+    return current->m_key;
 }
