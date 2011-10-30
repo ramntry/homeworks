@@ -12,11 +12,21 @@
 
 
 #include <iostream>
+#include "binarysearchtree.h"
 
 using namespace std;
 
 int main()
 {
+    BinarySearchTree t;
+    t.insert(6);
+    t.insert(3);
+    t.insert(5);
+    t.insert(8);
+    t.insert(7);
+
+    cout << t.search(8) << endl;
+
     cout << "I'm a homework 06, task 01" << endl;
     return 0;
 }
