@@ -3,7 +3,7 @@
 
 enum Color { Red, Black };
 
-class RBTree : public BinarySearchTree
+class RBTree //: public BinarySearchTree
 {
 public:
     RBTree();
@@ -15,4 +15,6 @@ public:
 
 private:
     Color m_color;
+    void rightRotate();
+    void leftRotate();
 };
