@@ -83,24 +83,24 @@ void BinarySearchTree::insert(int key)
     }
 }
 
-int BinarySearchTree::min() const
+BinarySearchTree *BinarySearchTree::minNode() const
 {
     if (isEmpty())
         throw std::runtime_error("Error in min(): BinarySearchTree is empty");
     BinarySearchTree *current = const_cast<BinarySearchTree *>(this);
     while (current->m_leftChild)
         current = current->m_leftChild;
-    return current->m_key;
+    return current;
 }
 
-int BinarySearchTree::max() const
+BinarySearchTree *BinarySearchTree::maxNode() const
 {
     if (isEmpty())
         throw std::runtime_error("Error in max(): BinarySearchTree is empty");
     BinarySearchTree *current = const_cast<BinarySearchTree *>(this);
     while (current->m_rightChild)
         current = current->m_rightChild;
-    return current->m_key;
+    return current;
 }
 
 
@@ -113,4 +113,46 @@ void BinarySearchTree::symorder(void (*act)(int key))
     act(m_key);
     if (m_rightChild)
         m_rightChild->symorder(act);
+}
+
+BinarySearchTree *BinarySearchTree::successorNode(int key) const
+{
+    if (isEmpty())
+        return NULL;
+
+    BinarySearchTree *current = const_cast<BinarySearchTree *>(this);
+    BinarySearchTree *ans = NULL;
+    while (current && current->m_key != key)
+        if (key < current->m_key)
+        {
+            ans = current;                    // Родителя, от которого был последний поворот налево запоминаем -
+            current = current->m_leftChild;   // ... если у узла с ключом key не окажется правого сына ключ такого
+        }                                     // ... родителя и окажется искомым ключом, следующим за key
+        else
+            current = current->m_rightChild;
+    if (!current->m_rightChild)
+        return ans;
+    return current->m_rightChild->minNode();
+}
+
+//void BinarySearchTree::remove(BinarySearchTree *subtree)
+//{
+//}
+
+void BinarySearchTree::remove(int key)
+{
+    BinarySearchTree *parent = getParent(key);
+    BinarySearchTree *&toRemove = step(parent, key);
+    if (!(toRemove->m_leftChild && toRemove->m_rightChild))
+    {
+        BinarySearchTree *tmp = toRemove;
+        toRemove = toRemove->m_rightChild ? toRemove->m_rightChild : toRemove->m_leftChild;
+        delete tmp;
+    }
+    else
+    {
+        BinarySearchTree *tmp = toRemove->m_rightChild->minNode();
+        toRemove->m_key = tmp->m_key;
+        toRemove->m_rightChild->remove(tmp->m_key);
+    }
 }

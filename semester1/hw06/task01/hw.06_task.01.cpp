@@ -59,6 +59,9 @@ int main()
 
     t2.symorder(print);
     cout << endl;
+    for (int i = 0; i < n; i++)
+        if (a[i] != t2.max())
+            cout << a[i] << "\t- " << t2.successor(a[i]) << endl;
 
     cout << "I'm a homework 06, task 01" << endl;
     return 0;

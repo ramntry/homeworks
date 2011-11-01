@@ -7,13 +7,13 @@ public:
     Set();
 
     /* Операции над элементами множества */
-    Set &operator <<(int key);               // Добавление
-    void exclude(int key);                   // Исключение
-    bool has(int key) const;                 // Проверка на наличие
+    void include(int key);                   ///< Включение
+    void exclude(int key);                   ///< Исключение
+    bool has(int key) const;                 ///< Проверка на наличие
 
     /* Операции над множествами */
-    Set &operator &(const Set &right) const;  // Пересечение
-    Set &operator |(const Set &right) const;  // Объединение
-    Set &operator /(const Set &right) const;  // Разность
-    Set &operator ^(const Set &right) const;  // Симметрическая разность
+    Set &intersection(const Set &right) const;          ///< Пересечение
+    Set &merger(const Set &right) const;                ///< Объединение
+    Set &difference(const Set &right) const;            ///< Разность
+    Set &symmetric_difference(const Set &right) const;  ///< Симметрическая разность
 };
