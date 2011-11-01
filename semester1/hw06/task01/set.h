@@ -4,7 +4,8 @@
 class Set : private RBTree
 {
 public:
-    Set();
+    Set(Set &src);
+    int size() const { return m_size; }
 
     /* Операции над элементами множества */
     void include(int key);                   ///< Включение
@@ -16,4 +17,7 @@ public:
     Set &merger(const Set &right) const;                ///< Объединение
     Set &difference(const Set &right) const;            ///< Разность
     Set &symmetric_difference(const Set &right) const;  ///< Симметрическая разность
+
+public:
+    int m_size;
 };
