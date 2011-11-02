@@ -13,8 +13,6 @@
 
 #include <iostream>
 #include "binarysearchtree.h"
-#include <stdexcept>
-#include <cstdlib>
 
 using namespace std;
 
@@ -25,54 +23,53 @@ void print(int key)
 
 int main()
 {
-/*
-    BinarySearchTree t;
-    try { t.min(); }
-    catch (std::runtime_error e) { cerr << e.what() << endl; }
-    cout << t.search(8) << endl;
-
-    t.insert(6);
-    t.max();
-    t.insert(6);
-    t.insert(3);
-    t.insert(5);
-    cout << t.search(8) << endl;
-    t.insert(5);
-    t.insert(8);
-    t.insert(7);
-
-    cout << t.search(8) << endl;
-
-    cout << t.min() << endl;
-    cout << t.max() << endl;
-*/
-    const int n = (1 << 4) - 1;
-    int * a = new int[n];
-    for (int i = 0; i < n; i++)
-        a[i] = rand() % (n * n);
-    for (int i = 0; i < n; i++)
-        cout << a[i] << ' ';
-    cout << endl;
-
-    BinarySearchTree t2(a, n);
-    t2.symorderBack(print);
-    cout << endl;
-    t2.symorder(print);
-    cout << endl;
-    for (int i = 0; i < n; i++)
-        t2.remove(a[i]);
-//    cout << t2.min() << ' ' << t2.max() << endl;
-/*
-    cout << t2.min() << ' ' << t2.max() << endl;
-
-    t2.symorder(print);
-    cout << endl;
-    for (int i = 0; i < n; i++)
-        if (a[i] != t2.max())
-            cout << a[i] << "\t- " << t2.successor(a[i]) << endl;
-
-    cout << "I'm a homework 06, task 01" << endl;
-*/
+    BinarySearchTree set;
+    clog << "(Type h for help)\n : ";
+    char command = '"';
+    cin >> command;
+    int item = 0;
+    while (cin && command != 'q')
+    {
+        switch (command)
+        {
+        case '+':
+            cin >> item;
+            set.insert(item);
+            break;
+        case '-':
+            cin >> item;
+            set.remove(item);
+            break;
+        case '<':
+            cout << "<: ";
+            set.symorder(print);
+            cout << endl;
+            break;
+        case '>':
+            cout << ">: ";
+            set.symorderBack(print);
+            cout << endl;
+            break;
+        case '?':
+            cin >> item;
+            cout << "?: " << (set.hasKey(item) ? 't' : 'f') << endl;
+            break;
+        case 'h':
+            clog << "h: + <item> - Include a new item into set\n"
+                 << "   - <item> - Exclude an item from set (t - item is in set, f - isn't in set)\n"
+                 << "   ? <item> - Check item in set\n"
+                 << "   <        - Print items in increasing order\n"
+                 << "   >        -     ...     in decreasing order\n"
+                 << "   q        - Exit\n"
+                 << "   h        - Print this help"
+                 << endl;
+            break;
+        default:
+            cerr << "e: Invalid command. Use +, -, ?, >, <, q or h to help" << endl;
+        }
+        clog << " : ";
+        cin >> command;
+    }
     return 0;
 }
 
