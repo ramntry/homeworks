@@ -12,6 +12,7 @@
 
 
 #include <iostream>
+#include <fstream>
 #include "binarysearchtree.h"
 
 using namespace std;
@@ -23,21 +24,22 @@ void print(int key)
 
 int main()
 {
+    ifstream in("in");
     BinarySearchTree set;
     clog << "(Type h for help)\n : ";
     char command = '"';
-    cin >> command;
+    in >> command;
     int item = 0;
-    while (cin && command != 'q')
+    while (in && command != 'q')
     {
         switch (command)
         {
         case '+':
-            cin >> item;
+            in >> item;
             set.insert(item);
             break;
         case '-':
-            cin >> item;
+            in >> item;
             set.remove(item);
             break;
         case '<':
@@ -51,7 +53,7 @@ int main()
             cout << endl;
             break;
         case '?':
-            cin >> item;
+            in >> item;
             cout << "?: " << (set.hasKey(item) ? 't' : 'f') << endl;
             break;
         case 'h':
@@ -68,7 +70,7 @@ int main()
             cerr << "e: Invalid command. Use +, -, ?, >, <, q or h to help" << endl;
         }
         clog << " : ";
-        cin >> command;
+        in >> command;
     }
     return 0;
 }

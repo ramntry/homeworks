@@ -10,8 +10,8 @@ BinarySearchTree::BinarySearchTree(const int *array, int size) :
 
 BinarySearchResult BinarySearchTree::search(int key)
 {
-    BinarySearchNode **current = &m_root;
-    BinarySearchNode *parent = m_root;
+    BinarySearchNode **current = &m_root;    // "Бегунок"
+    BinarySearchNode *parent = m_root;       // подтягивающийся за "бегунком" родитель
     while (*current && (*current)->m_key != key)
         if (key > (*current)->m_key)
         {
@@ -36,25 +36,25 @@ void BinarySearchTree::insert(int key)
 void BinarySearchTree::remove(int key)
 {
     BinarySearchResult place = search(key);
-    if (place == NULL)
+    if (place == NULL)                       // Если ключа нет - ничего не делать
         return;
-    if (!place.m_node->m_rightChild)
-    {
+    if (!place.m_node->m_rightChild)         // Если правого сына нет задача решается однозначно вне зависимости от
+    {                                        // ... того, есть ли левый сын
         BinarySearchNode *tmp = place.m_node;
         place.m_node = place.m_node->m_leftChild;
         delete tmp;
     }
     else
     {
-        if (place.m_node->m_rightChild->m_leftChild)
+        if (place.m_node->m_rightChild->m_leftChild)  // Только так minNode отрабатывает нормально
         {
-            BinarySearchResult next = BinarySearchTree(place.m_node->m_rightChild).minNode();
-            place.m_node->m_key = next.m_node->m_key;
-            BinarySearchTree(next.m_parent).remove(key);
-        }
+            BinarySearchResult next = BinarySearchTree(place.m_node->m_rightChild).minNode(); // шаг вправо - до
+            place.m_node->m_key = next.m_node->m_key;                                         // ... упора влево
+            BinarySearchTree(next.m_parent).remove(key);  // только стартуя от родителя - иначе удаление
+        }                                                 // ... не отрабатывает
         else
         {
-            BinarySearchNode *tmp = place.m_node;
+            BinarySearchNode *tmp = place.m_node;         // иначе удаляем вручную
             place.m_node = place.m_node->m_rightChild;
             delete tmp;
         }
