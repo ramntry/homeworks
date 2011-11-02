@@ -20,12 +20,12 @@ using namespace std;
 
 void print(int key)
 {
-    static int count = 0;
-    cout << count++ << ":\t" << key << endl;
+    cout << key << ' ';
 }
 
 int main()
 {
+/*
     BinarySearchTree t;
     try { t.min(); }
     catch (std::runtime_error e) { cerr << e.what() << endl; }
@@ -45,7 +45,7 @@ int main()
 
     cout << t.min() << endl;
     cout << t.max() << endl;
-
+*/
     const int n = (1 << 4) - 1;
     int * a = new int[n];
     for (int i = 0; i < n; i++)
@@ -55,6 +55,14 @@ int main()
     cout << endl;
 
     BinarySearchTree t2(a, n);
+    t2.symorderBack(print);
+    cout << endl;
+    t2.symorder(print);
+    cout << endl;
+    for (int i = 0; i < n; i++)
+        t2.remove(a[i]);
+//    cout << t2.min() << ' ' << t2.max() << endl;
+/*
     cout << t2.min() << ' ' << t2.max() << endl;
 
     t2.symorder(print);
@@ -64,6 +72,7 @@ int main()
             cout << a[i] << "\t- " << t2.successor(a[i]) << endl;
 
     cout << "I'm a homework 06, task 01" << endl;
+*/
     return 0;
 }
 

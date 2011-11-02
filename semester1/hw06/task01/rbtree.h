@@ -3,7 +3,7 @@
 
 enum Color { Red, Black };
 
-class RBTree : public BinarySearchTree
+class RBTree// : public BinarySearchTree
 {
 public:
     void insert(int value);

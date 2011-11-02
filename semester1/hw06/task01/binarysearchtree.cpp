@@ -1,88 +1,93 @@
 #include "binarysearchtree.h"
 #include <stdexcept>
 
-BinarySearchTree::BinarySearchTree() :
-    m_key(0),
-    m_leftChild(this),  // Специальный маркер пустоты дерева
-    m_rightChild(0)
-{}
-
-BinarySearchTree::BinarySearchTree(int key) :
+BinarySearchNode::BinarySearchNode(int key) :
     m_key(key),
-    m_leftChild(0),
-    m_rightChild(0)
+    m_leftChild(NULL),
+    m_rightChild(NULL)
 {}
 
 BinarySearchTree::BinarySearchTree(const int *array, int size) :
-    m_key(*array),
-    m_leftChild(0),
-    m_rightChild(0)
+    m_root(NULL)
 {
-    for (int i = 1; i < size; i++)
+    for (int i = 0; i < size; i++)
         insert(array[i]);
 }
 
-BinarySearchTree *&BinarySearchTree::step(BinarySearchTree *node, int key) const
+BinarySearchResult BinarySearchTree::search(int key)
 /**
- * Принимает решение по ключу, в какую сторону делать шаг в поиске. Возвращает
- * ссылку на указатель на нужный узел - он становится доступным на изменение
+ * Метод возвращает ссылку на указатель на узел дерева, соответствующий ключу key вне зависимости от его наличия.
  */
 {
-    if (key > node->m_key)
-        return node->m_rightChild;
-    return node->m_leftChild;
-}
-
-BinarySearchTree *BinarySearchTree::search(int key) const
-/**
- * Метод возвращает указатель на узел дерева с ключом key или 0, если такого ключа в дереве нет.
- * Метод малополезен для экземпляров класса BinarySearchTree, но может представлять интерес для его наследников:
- * например, это образ метода has для множества или has_key для отображения и метода operator [] для отображения.
- */
-{
-    if (isEmpty())
-        return 0;
-
-    BinarySearchTree *res = const_cast<BinarySearchTree *>(this);
-    while (res && res->m_key != key)
-        res = step(res, key);
-    return res;
-}
-
-BinarySearchTree *BinarySearchTree::getParent(int key) const
-/**
- * Метод возвращает указатель на узел дерева, который является родителем узла со значением key или был бы им, если бы
- * такой ключ присутствовал. Возвращает 0 в случае, если ключ key является ключом корня дерева. Не обрабатывает
- * ситуацию с пустым деревом.
- */
-{
-    BinarySearchTree *parent = 0;
-    BinarySearchTree *current = const_cast<BinarySearchTree *>(this);
-    while (current && current->m_key != key)
-    {
-        parent = current;
-        current = step(current, key);
-    }
-    return parent;
+    BinarySearchNode **current = &m_root;
+    BinarySearchNode *parent = NULL;
+    while (*current && (*current)->m_key != key)
+        if (key > (*current)->m_key)
+        {
+            parent = *current;
+            current = &((*current)->m_rightChild);
+        }
+        else
+        {
+            parent = *current;
+            current = &((*current)->m_leftChild);
+        }
+    return BinarySearchResult(*current, parent);
 }
 
 void BinarySearchTree::insert(int key)
+/**
+ * Метод осуществляет вставку нового элемента в дерево, если его еще в нем нет, с сохранением свойств дерева
+ */
 {
-    if (isEmpty())
+    BinarySearchResult position = search(key);
+    if (position == NULL)
     {
-        m_key = key;
-        m_leftChild = 0;
-        return;
-    }
-    BinarySearchTree *pos = getParent(key);
-    if (pos)                                 // Если добавлямый элемент не в корне дерева
-    {
-        BinarySearchTree *&child = step(pos, key);
-        if (!child)                          // ... и не в соответсвующем узле
-            child = new BinarySearchTree(key);
+        position.m_place = new BinarySearchNode(key);
+        position.m_place->m_parent = position.m_parent;
     }
 }
 
+void BinarySearchTree::remove(int key)
+{
+    BinarySearchResult place = search(key);
+    if (place == NULL)
+        return;
+    if (!place.m_place->m_rightChild)
+    {
+        place.m_parent->m_leftChild = place.m_place->m_leftChild;
+        delete place.m_place;
+    }
+    else if (m_root == place.m_place)
+    {
+        BinarySearchNode *succ = BinarySearchTree(place.m_place->m_rightChild).minNode();
+        place.m_place->m_key = succ->m_key;
+        BinarySearchTree(succ).remove(key);
+    }
+    else
+    {
+        delete m_root;
+        m_root = NULL;
+    }
+}
+
+BinarySearchNode *BinarySearchTree::minNode() const
+{
+    BinarySearchNode *result = m_root;
+    while (result->m_leftChild)
+        result = result->m_leftChild;
+    return result;
+}
+
+BinarySearchNode *BinarySearchTree::maxNode() const
+{
+    BinarySearchNode *result = m_root;
+    while (result->m_rightChild)
+        result = result->m_rightChild;
+    return result;
+}
+
+/*
 BinarySearchTree *BinarySearchTree::minNode() const
 {
     if (isEmpty())
@@ -103,18 +108,28 @@ BinarySearchTree *BinarySearchTree::maxNode() const
     return current;
 }
 
-
+*/
 void BinarySearchTree::symorder(void (*act)(int key))
 {
     if (isEmpty())
         return;
-    if (m_leftChild)
-        m_leftChild->symorder(act);
-    act(m_key);
-    if (m_rightChild)
-        m_rightChild->symorder(act);
+    if (m_root->m_leftChild)
+        BinarySearchTree(m_root->m_leftChild).symorder(act);
+    act(m_root->m_key);
+    if (m_root->m_rightChild)
+        BinarySearchTree(m_root->m_rightChild).symorder(act);
 }
-
+void BinarySearchTree::symorderBack(void (*act)(int key))
+{
+    if (isEmpty())
+        return;
+    if (m_root->m_rightChild)
+        BinarySearchTree(m_root->m_rightChild).symorderBack(act);
+    act(m_root->m_key);
+    if (m_root->m_leftChild)
+        BinarySearchTree(m_root->m_leftChild).symorderBack(act);
+}
+/*
 BinarySearchTree *BinarySearchTree::successorNode(int key) const
 {
     if (isEmpty())
@@ -156,3 +171,4 @@ void BinarySearchTree::remove(int key)
         toRemove->m_rightChild->remove(tmp->m_key);
     }
 }
+*/
