@@ -87,12 +87,13 @@ void WCHachTable::put(const char *word)
     }
 }
 
-void WCHachTable::printResult()
+int WCHachTable::printResult()
 {
     int currentNumber = 1;
     for (int i = 0; i < hashTableSize; i++)
         if (m_hashTable[i])
-            currentNumber += printWordBST(m_hashTable[i], currentNumber);
+            currentNumber = printWordBST(m_hashTable[i], currentNumber);
+    return currentNumber - 1;
 }
 
 double WCHachTable::getAvrFillingTrees()

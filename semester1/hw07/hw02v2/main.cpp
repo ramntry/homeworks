@@ -32,7 +32,9 @@ int main(int argc, char **argv)
         }
         fclose(in);
 
-        ht.printResult();
+        int uniqWords = ht.printResult();
+        printf("Total: %d words. Average frequency: %.3lf\n",
+            counter, ((double) counter) / uniqWords);
         printf("Load factor: %.3lf\n", ht.getLoadFactor());
         printf("Average filling chains: %.3lf\n", ht.getAvrFillingTrees());
         printf("Maximum filling chains: %.3lf\n", ht.getMaxFillingTrees());
