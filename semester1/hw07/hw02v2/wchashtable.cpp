@@ -1,6 +1,5 @@
 #include "wchashtable.h"
 #include <cstring>
-#include <cstdio>
 
 MemoryPool::~MemoryPool()
 {
@@ -93,10 +92,7 @@ void WCHachTable::printResult()
     int currentNumber = 1;
     for (int i = 0; i < hashTableSize; i++)
         if (m_hashTable[i])
-        {
             currentNumber += printWordBST(m_hashTable[i], currentNumber);
-            putchar('\n');
-        }
 }
 
 double WCHachTable::getAvrFillingTrees()

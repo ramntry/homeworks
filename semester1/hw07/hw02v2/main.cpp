@@ -1,26 +1,34 @@
 #include <cstdio>
-#include "wordcounter.v2.h"
+#include <cctype>
 #include "wchashtable.h"
 
-int main(void)
+inline char *strToLower(char *buf)
 {
-    printf("Counting the frequency of occurrence of words in the file.\n%s",
-           "Enter the file name: ");
-    char filename[128];
-    scanf("%s", filename);
+    for (int i = 0; (buf[i] = tolower(buf[i])); i++);
+    return buf;
+}
 
-    FILE *in = fopen(filename, "r");
-    int counter = 0;
-    char buf[2048];
-    buf[0] = '\0';
-
+int main(int argc, char **argv)
+{
+    if (argc < 2)
+    {
+        printf("Usage: %s FILE\nPrint word counts for FILE\n", argv[0]);
+        return 1;
+    }
+    FILE *in = fopen(argv[1], "r");
     if (in)
     {
+        int counter = 0;
+        char buf[2048];
+        buf[0] = '\0';
+
         WCHachTable ht;
-        while (fscanf(in, "%s", buf) != EOF)
+        fscanf(in, "%*[^-0-9A-Za-z]");
+        while (fscanf(in, "%[-0-9A-Za-z]", buf) != EOF)
         {
-            ht.put(buf);
+            ht.put(strToLower(buf));
             counter++;
+            fscanf(in, "%*[^-0-9A-Za-z]");
         }
         fclose(in);
 
@@ -30,7 +38,7 @@ int main(void)
         printf("Maximum filling chains: %.3lf\n", ht.getMaxFillingTrees());
     }
     else
-        printf("E: file \"%s\" not found\n", filename);
+        printf("E: file %s not found\n", argv[1]);
 
     return 0;
 }
