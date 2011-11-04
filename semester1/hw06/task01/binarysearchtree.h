@@ -28,6 +28,8 @@ struct BinarySearchNode
 
     BinarySearchNode(int key) :
         m_key(key), m_leftChild(NULL), m_rightChild(NULL) {}
+
+    ~BinarySearchNode();
 };
 
 struct BinarySearchResult

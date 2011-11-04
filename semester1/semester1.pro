@@ -1,5 +1,10 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    hw06
+    hw06 \
+    hw07
+
+
+
+
 

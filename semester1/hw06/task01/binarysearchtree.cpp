@@ -8,6 +8,20 @@ BinarySearchTree::BinarySearchTree(const int *array, int size) :
         insert(array[i]);
 }
 
+BinarySearchNode::~BinarySearchNode()
+{
+    if (m_leftChild)
+        delete m_leftChild;
+    if (m_rightChild)
+        delete m_rightChild;
+}
+
+BinarySearchTree::~BinarySearchTree()
+{
+    if (m_root)
+        delete m_root;
+}
+
 BinarySearchResult BinarySearchTree::search(int key)
 {
     BinarySearchNode **current = &m_root;    // "Бегунок"
@@ -42,6 +56,8 @@ void BinarySearchTree::remove(int key)
     {                                        // ... того, есть ли левый сын
         BinarySearchNode *tmp = place.m_node;
         place.m_node = place.m_node->m_leftChild;
+        tmp->m_leftChild = NULL;
+        tmp->m_rightChild = NULL;
         delete tmp;
     }
     else
@@ -56,6 +72,8 @@ void BinarySearchTree::remove(int key)
         {
             BinarySearchNode *tmp = place.m_node;         // иначе удаляем вручную
             place.m_node = place.m_node->m_rightChild;
+            tmp->m_leftChild = NULL;
+            tmp->m_rightChild = NULL;
             delete tmp;
         }
     }

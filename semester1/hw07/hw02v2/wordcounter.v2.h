@@ -14,7 +14,7 @@
 #pragma once
 
 // Размер массивов. Только для отладки. НЕ ДОЛЖЕН ПРЕВЫШАТЬ 256.
-const unsigned int SIZE = 8;
+const unsigned int SIZE = 256;
 
 // Размер заглушки в структруре бинарного дерева поиска WordBST от нулевого адреса до начала массива узлов WordNode.
 // ... Составлен размером указателя на следующее дерево, индексом текущей позиции в дереве и счетчиком первого узла.
@@ -26,14 +26,15 @@ const unsigned int sizeDummy = (sizeof(int *) + 2 * sizeof(int)) / sizeof(int);
 // ... целочисленные счетчики. В данном случае атрибуты - индекс левого и правого сына дерева. В перспективе - цвет.
 const unsigned int addFieldsSize = 2 * sizeof(unsigned char);
 
+enum Direction { toLeftChild = 0, toRightChild, stopSearch };
+
 // Ограничение на максимальное количество слов в дереве (128) позволяет хранить не указатели на узлы дерева, а их
 // ... однобайтовые индексы в массиве.
 union WordNode
 {
     struct
     {
-        unsigned char leftChild;   // Индексы левого и правого сына в массиве nodes структуры WordBST
-        unsigned char rightChild;
+        unsigned char childs[2];   // Индексы левого и правого сына в массиве nodes структуры WordBST
         char firstLetter;          // Первый символ хранимой строки. Последующие храняться непрерывным массивом
                                    // ... в памяти. Следовательно, массив WordNode *nodes прерывен - его элементы
      // Счетчик в узел не включен  // ... расположены выровнено по int и с пропусками, соответсвующими "хвостам"
@@ -55,7 +56,7 @@ union WordBST
     {
         WordBST *next;               // Для связи деревьев в список
         int top;                     // Индекс текущей свободной позиции в конце массива.
-        unsigned int counters[SIZE];  // Массив для доступа к счетчику i-ого узла дерева
+        unsigned int counters[SIZE]; // Массив для доступа к счетчику i-ого узла дерева
     };
     struct
     {
@@ -86,3 +87,5 @@ int append(WordBST *tree, const char *word);  // Добавление строк
  * в дереве) возвращает -1, иначе - старое значение счетчика строки (0, если было успешно добавлено новое).
  */
 int handle(WordBST *tree, const char *word);
+
+int printWordBST(WordBST *tree, int enumStarts = 1, unsigned int startsWith = 0);

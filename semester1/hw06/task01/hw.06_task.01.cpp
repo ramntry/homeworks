@@ -17,7 +17,7 @@
 
 using namespace std;
 
-void print(int key)
+void printWordBST(int key)
 {
     cout << key << ' ';
 }
@@ -44,12 +44,12 @@ int main()
             break;
         case '<':
             cout << "<: ";
-            set.symorder(print);
+            set.symorder(printWordBST);
             cout << endl;
             break;
         case '>':
             cout << ">: ";
-            set.symorderBack(print);
+            set.symorderBack(printWordBST);
             cout << endl;
             break;
         case '?':
@@ -72,6 +72,7 @@ int main()
         clog << " : ";
         in >> command;
     }
+
     return 0;
 }
 

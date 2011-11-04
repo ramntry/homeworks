@@ -1,15 +1,17 @@
 #include "wordcounter.v2.h"
 #include <cstring>
+#include <cstdio>
 
-inline int strCmp(const char * fst, const char * snd)  // Почему здесь перестает работать стандартная strcmp - не ясно
+inline Direction strCmp(const char *fst, const char *snd)
 {
+        // Почему здесь перестает работать стандартная strcmp - не ясно
         int i = 0;
         for (; fst[i] && fst[i] == snd[i]; i++);
-        if (fst[i] > snd[i])
-                return 1;
         if (fst[i] < snd[i])
-                return -1;
-        return 0;
+                return toLeftChild;       // word меньше. Нам в левую ветвь.
+        if (fst[i] > snd[i])
+                return toRightChild;      // word больше. Нам в правую ветвь.
+        return stopSearch;
 }
 
 inline int calcFreeSpace(unsigned int top)
@@ -29,8 +31,8 @@ int append(WordBST *tree, const char *word)
         return 0;
     tree->counters[tree->top] = 1;                // инициализация счетчика
     WordNode *topNode = tree->nodes + tree->top;
-    topNode->leftChild = 0;                       // ... и зануление индексов сыновей
-    topNode->rightChild = 0;
+    topNode->childs[0] = 0;                       // ... и зануление индексов сыновей
+    topNode->childs[1] = 0;
 
     int writed = 0;
     while (word[writed] && writed < freeSpace)    // Копирование строки с контролем выхода за границы дерева
@@ -49,40 +51,37 @@ int handle(WordBST *tree, const char *word)
     unsigned int index = 0;
     for (;;)
     {
-        switch (strCmp(word, &(tree->nodes[index].firstLetter)))
-        {
-        case 0:
+        Direction resCmp = strCmp(word, &(tree->nodes[index].firstLetter));
+        if (resCmp == stopSearch)  // если строки равны
             return (tree->counters[index])++;
-        case -1:
-            if (tree->nodes[index].leftChild)
-            {
-                index = tree->nodes[index].leftChild;
-                break;
-            }
-            else
-            {
-                unsigned int newNodeIndex = tree->top;
-                int writed = append(tree, word);
-                if (word[writed])
-                    return -1;
-                tree->nodes[index].leftChild = newNodeIndex;
-                return 0;
-            }
-        case 1:
-            if (tree->nodes[index].rightChild)
-            {
-                index = tree->nodes[index].rightChild;
-                break;
-            }
-            else
-            {
-                unsigned int newNodeIndex = tree->top;
-                int writed = append(tree, word);
-                if (word[writed])
-                    return -1;
-                tree->nodes[index].rightChild = newNodeIndex;
-                return 0;
-            }
+
+        if (tree->nodes[index].childs[resCmp])         // Если есть нужный сын,
+            index = tree->nodes[index].childs[resCmp]; // ... идем туда
+        else
+        {
+            unsigned int newNodeIndex = tree->top;             // Запомним индекс добавляемого элемента
+            int writed = append(tree, word);                   // Попытаемся его разместить
+            if (word[writed])                                  // Если удачно -
+                return -1;
+            tree->nodes[index].childs[resCmp] = newNodeIndex;  // ... прописываемся у родителя
+            return 0;
         }
     }
+}
+
+int printWordBST(WordBST *tree, int enumStarts, unsigned int startsWith)
+{
+    static int currentNum = enumStarts;
+
+    if (tree->nodes[startsWith].childs[toLeftChild])
+        printWordBST(tree, currentNum, tree->nodes[startsWith].childs[toLeftChild]);
+
+    if (currentNum != -1)
+        printf("%5d:", currentNum++);
+    printf("%20s - %d\n", &(tree->nodes[startsWith].firstLetter), tree->counters[startsWith]);
+
+    if (tree->nodes[startsWith].childs[toRightChild])
+        printWordBST(tree, currentNum, tree->nodes[startsWith].childs[toRightChild]);
+
+    return currentNum;
 }
