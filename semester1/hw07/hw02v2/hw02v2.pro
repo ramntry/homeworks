@@ -1,9 +1,17 @@
 SOURCES += \
     wordcounter.v2.cpp \
-    main.cpp
+    main.cpp \
+    wchashtable.cpp
 
 HEADERS += \
-    wordcounter.v2.h
+    wordcounter.v2.h \
+    wchashtable.h
+
+
+
+
+
+
 
 
 
