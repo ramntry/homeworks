@@ -16,7 +16,7 @@ inline Direction strCmp(const char *fst, const char *snd)
 
 inline int calcFreeSpace(unsigned int top)
 {
-    return SIZE * sizeof(int) - addFieldsSize - 1 - top * sizeof(int);
+    return capacityWordBST * sizeof(int) - addFieldsSize - 1 - top * sizeof(int);
 }
 
 inline int calcAllocatedSpace(int writed)

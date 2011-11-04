@@ -14,7 +14,8 @@
 #pragma once
 
 // Размер массивов. НЕ ДОЛЖЕН ПРЕВЫШАТЬ 256.
-const unsigned int SIZE = 16;  // 256
+//const unsigned int capacityWordBST = 16;  // DEBUG MODE. Release value is 256
+const unsigned int capacityWordBST = 256;
 
 // Размер заглушки в структруре бинарного дерева поиска WordBST от нулевого адреса до начала массива узлов WordNode.
 // ... Составлен размером указателя на следующее дерево, индексом текущей позиции в дереве и счетчиком первого узла.
@@ -56,13 +57,13 @@ union WordBST
     {
         WordBST *next;               // Для связи деревьев в список
         int top;                     // Индекс текущей свободной позиции в конце массива.
-        unsigned int counters[SIZE]; // Массив для доступа к счетчику i-ого узла дерева
+        unsigned int counters[capacityWordBST]; // Массив для доступа к счетчику i-ого узла дерева
     };
     struct
     {
 int dummy[sizeDummy];  // Заглушка для организации необходимого смещения массивов счетчиков и узлов.
 
-        WordNode nodes[SIZE];  //Массив для доступа к i-ому узлу дерева.
+        WordNode nodes[capacityWordBST];  //Массив для доступа к i-ому узлу дерева.
     };
 };
 
