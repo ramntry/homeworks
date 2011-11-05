@@ -63,7 +63,6 @@ int main(int argc, char **argv) try
               (double) counter / uniqWords);
         hashTable.printStat();
     }
-
     delete[] filename;
 
     return 0;
@@ -74,7 +73,7 @@ catch (FileNotFoundException)
     fprintf(stderr, "E: file not found\n");
     return 1;
 }
-catch (WordBSTOverflowExceptionToManyWords)
+catch (WordBSTOverflowTooManyWordsException)
 {
     fprintf(stderr, "E: chain hash table overflowing\n");
     return 2;

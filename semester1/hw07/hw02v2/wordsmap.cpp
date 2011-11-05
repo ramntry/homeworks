@@ -73,7 +73,7 @@ WordsMap::WordsMap(const char *filename, bool isDump)
         char *cursor = m_map + 3;
 
         while ((fscanf(f, noWordRegExp)!= EOF) &&          // По большому счету, огород из-за желания избавиться от
-               (fscanf(f, wordRegExp, cursor) != EOF))     // ... предупрежедния "проигнорировано значение fscanf"
+               (fscanf(f, wordRegExp, cursor) != EOF))     // ... предупреждения "проигнорировано значение fscanf"
         {
             unsigned int len = strlen(cursor);
             len = len > 255 ? 255 : len;       // Усечение строк
@@ -89,9 +89,7 @@ WordsMap::WordsMap(const char *filename, bool isDump)
         makeHeader(m_map);
         makeTerm(m_map, m_size);
         strToLower(m_cursor + 1);
-
     }
-
     fclose(f);
 }
 

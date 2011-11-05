@@ -15,8 +15,8 @@ const int sizeOfBlock = 128;
 
 const int hashTableSize = 1 << hashTableSizeP2;
 
-class WordBSTOverflowExceptionToLengthString {};
-class WordBSTOverflowExceptionToManyWords {};
+class WordBSTOverflowTooLengthStringException {};
+class WordBSTOverflowTooManyWordsException {};
 
 /**
  * Блок пула MemoryPool. Имеет фиксированный размер
@@ -45,14 +45,13 @@ public:
 private:
     BlockPool *block;       // Текущий актуальный блок
     int top;                // ... и очередная свободная позиция в нем
-
 };
 
 class WCHachTable
 {
 public:
     WCHachTable();
-    ~WCHachTable();
+    ~WCHachTable() { delete[] m_hashTable; }
 
     void put(const char *word);       // Подать строку на обработку
     int printResult();                // Распечатать гистограмму частот вхождений строк

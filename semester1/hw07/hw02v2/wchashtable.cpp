@@ -38,11 +38,6 @@ WCHachTable::WCHachTable() :
         m_hashTable[i] = NULL;                 //  Изначально хеш-таблица пуста. В связи с большим размером деревьев
 }                                              //  ... поиска они выделяются по необходимости
 
-WCHachTable::~WCHachTable()
-{
-    delete[] m_hashTable;
-}
-
 /**
  * Хеширование методом умножений. Кормен и Лейзерсон, "Алгоритмы. Построение и анализ", 1-ое изд., перевод МЦНМО,
  * стр. 222.
@@ -79,14 +74,14 @@ void WCHachTable::put(const char *word)
         if (counter == 0)  // было добавлено новое слово
             m_size++;
         else if (counter == -1)
-            throw WordBSTOverflowExceptionToManyWords();
+            throw WordBSTOverflowTooManyWordsException();
     }
     else
     {
         m_hashTable[hash] = m_pool.getWordBST();
         int writed = append(m_hashTable[hash], word);        //  Инициализация значением (деревья не используют
         if (word[writed])                                    //  ... охранников)
-            throw WordBSTOverflowExceptionToLengthString();
+            throw WordBSTOverflowTooLengthStringException();
         m_size++;
     }
 }
@@ -115,6 +110,8 @@ void WCHachTable::printStat()
             treesNumber++;
         }
 
-    printf("Load factor: %.3lf\nAverage filling chains: %.3lf\nMaximum filling chains: %.3lf\n",
+    printf("Load factor: %.3lf\n"
+           "Average filling chains: %.3lf\n"
+           "Maximum filling chains: %.3lf\n",
           (double) m_size / hashTableSize, accumulator / treesNumber, maximum);
 }
