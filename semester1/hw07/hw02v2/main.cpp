@@ -1,46 +1,63 @@
 #include <cstdio>
-#include <cctype>
+#include <cstring>
 #include "wchashtable.h"
+#include "wordsmap.h"
 
-inline char *strToLower(char *buf)
+int main(int argc, char **argv) try
 {
-    for (int i = 0; (buf[i] = tolower(buf[i])); i++);
-    return buf;
-}
+    bool isDump = false;
+    bool onlySaveDump = false;
+    const char *filename = NULL;
 
-int main(int argc, char **argv)
-{
-    if (argc < 2)
+    switch (argc)
     {
-        printf("Usage: %s FILE\nPrint word counts for FILE\n", argv[0]);
+    case 1:
+        printf("Usage: %s [-d|-l] FILE\nPrint word counts for FILE\n%s%s", argv[0],
+               "   -d  just save the DUMP file. Nothing to analyze\n",
+               "   -l  LOAD the input file as a dump and analyze its\n");
         return 1;
+    case 2:
+        filename     = argv[1];
+        break;
+    default:
+        onlySaveDump = !strcmp(argv[1], "-d");
+        isDump       = !strcmp(argv[1], "-l");
+        filename     = argv[2];
     }
-    FILE *in = fopen(argv[1], "r");
-    if (in)
+
+    WordsMap wmap(filename, isDump);
+    if (onlySaveDump)
     {
-        int counter = 0;
-        char buf[2048];
-        buf[0] = '\0';
-
-        WCHachTable ht;
-        fscanf(in, "%*[^-0-9A-Za-z]");
-        while (fscanf(in, "%[-0-9A-Za-z]", buf) != EOF)
-        {
-            ht.put(strToLower(buf));
-            counter++;
-            fscanf(in, "%*[^-0-9A-Za-z]");
-        }
-        fclose(in);
-
-        int uniqWords = ht.printResult();
-        printf("Total: %d words. Average frequency: %.3lf\n",
-            counter, ((double) counter) / uniqWords);
-        printf("Load factor: %.3lf\n", ht.getLoadFactor());
-        printf("Average filling chains: %.3lf\n", ht.getAvrFillingTrees());
-        printf("Maximum filling chains: %.3lf\n", ht.getMaxFillingTrees());
+        char *fname = new char[strlen(filename) + 10];
+        strcpy(fname, filename);
+        strcat(fname, ".wordsmap");
+        wmap.dump(fname);
     }
     else
-        printf("E: file %s not found\n", argv[1]);
+    {
+        WCHachTable hashTable;
+        char *currentWord = wmap.getWord();
+        while (*currentWord)
+        {
+            hashTable.put(currentWord);
+            currentWord = wmap.getWord();
+        }
+
+        hashTable.printResult();
+        printf("Load factor: %.3lf\n", hashTable.getLoadFactor());
+        printf("Average filling chains: %.3lf\n", hashTable.getAvrFillingTrees());
+        printf("Maximum filling chains: %.3lf\n", hashTable.getMaxFillingTrees());
+    }
 
     return 0;
+}
+
+catch (FileNotFoundException)
+{
+    fprintf(stderr, "E: file not found\n");
+    return 1;
+}
+catch (WordBSTOverflowExceptionToManyWords)
+{
+    fprintf(stderr, "E: chain hash table overflowing\n");
 }

@@ -54,8 +54,8 @@ public:
     WCHachTable();
     ~WCHachTable();
 
-    void put(const char *word);  // Подать строку на обработку
-    int printResult();           // Распечатать гистограмму частот вхождений строк
+    void put(const char *word);       // Подать строку на обработку
+    int printResult();                // Распечатать гистограмму частот вхождений строк
     double getLoadFactor() { return (double) m_size / hashTableSize; }
     double getAvrFillingTrees();
     double getMaxFillingTrees();
