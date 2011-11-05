@@ -3,7 +3,6 @@
 #include <cstring>
 #include "wordsmap.h"
 
-inline void skipTrash(FILE *f) { fscanf(f, noWordRegExp); }
 inline
 void strToLower(char *buf)
 {
@@ -63,31 +62,28 @@ WordsMap::WordsMap(const char *filename, bool isDump)
 
     if (isDump)
     {
-        m_size = size;
         m_map = (char *) malloc(size);
-        fread(m_map, 1, size, f);
-        m_cursor = m_map + 2;         // Установка курсора в боевое положение
-        makeTerm(m_map, size);        // Защита от подтасовки некорректного файла
+        m_size = fread(m_map, 1, size, f);
+        m_cursor = m_map + 2;              // Установка курсора в боевое положение
+        makeTerm(m_map, m_size);           // Защита от подтасовки некорректного файла
     }
     else
     {
-        char *pool = (char *) malloc(5 + size);
-        char *cursor = pool + 3;
+        m_map = (char *) malloc(5 + size);
+        char *cursor = m_map + 3;
 
-        skipTrash(f);
-        while (fscanf(f, wordRegExp, cursor) != EOF)
+        while ((fscanf(f, noWordRegExp)!= EOF) &&          // По большому счету, огород из-за желания избавиться от
+               (fscanf(f, wordRegExp, cursor) != EOF))     // ... предупрежедния "проигнорировано значение fscanf"
         {
             unsigned int len = strlen(cursor);
             len = len > 255 ? 255 : len;       // Усечение строк
 
             *(cursor - 1) = len;               // Запись слева от строки ее размера
             cursor += len + 1;
-
-            skipTrash(f);
         }
 
-        m_size = cursor - pool + 1;
-        m_map = (char *) realloc(pool, m_size);
+        m_size = cursor - m_map + 1;
+        m_map = (char *) realloc(m_map, m_size);
         m_cursor = m_map + 2;
 
         makeHeader(m_map);
