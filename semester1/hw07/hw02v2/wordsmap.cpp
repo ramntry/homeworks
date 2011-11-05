@@ -3,7 +3,9 @@
 #include <cstring>
 #include "wordsmap.h"
 
-inline void strToLower(char *buf)
+inline void skipTrash(FILE *f) { fscanf(f, noWordRegExp); }
+inline
+void strToLower(char *buf)
 {
     for (int i = 0; (buf[i] = tolower(buf[i])); i++);
 }
@@ -26,27 +28,33 @@ long int getFileSize(FILE *f)
     return size;
 }
 
-char *initMap(FILE *f, char *pool)
+inline
+void makeHeader(char *pool)
 {
-    char *buf  = (char *) malloc(2048);
-    buf[0] = '\0';
-    fscanf(f, "%*[^-0-9A-Za-z_$@+&]");
-    fscanf(f, "%[-0-9A-Za-z_$@+&]", buf);
-
-    char *cursor = pool;
-    *(cursor++) = strlen(buf);
-    *(cursor++) = 0;
-    *(cursor++) = '\0';
-
-    int i = 0;
-    for (; buf[i] && i < 255; i++)
-        cursor[i] = buf[i];
-    cursor[i] = '\0';
-    cursor += i + 1;
-
-    free(buf);
-    return cursor;
+    pool[0] = pool[2];
+    pool[1] = 0;
+    pool[2] = '\0';
 }
+
+inline
+void makeTerm(char *pool, long int size)
+{
+    pool[size - 1] = '\0';
+    pool[size - 2] = '\0';
+}
+
+/* Формат внутреннего представления следующий:
+ *
+ * [sf][0]\0first . .
+ *         ^       .  [sn][sc]current\0next[s1]string1[s2]string2 ... [sl]last\0\0
+ * (заголовок)                ^
+ *                                     (центральный фрагмент)                 (терминатор)
+ *
+ * где [sX] - размер строки, соответственно X: f - first, n - next, c - current etc, \0 - нулевой байт.
+ *     [0]  - размер охранника и \0 - сам охранник (строка нулевой длины)
+ *     current  - строка, указатель на которую (^, m_cursor) только что передан клиенту методом getWord().
+ * Заголовок изображен отдельно, поскольку для строки ниже он не актуален - будет изменен.
+ */
 
 WordsMap::WordsMap(const char *filename, bool isDump)
 {
@@ -58,43 +66,51 @@ WordsMap::WordsMap(const char *filename, bool isDump)
         m_size = size;
         m_map = (char *) malloc(size);
         fread(m_map, 1, size, f);
-        m_cursor = m_map + 2;
-        m_map[size - 1] = '\0';
-        m_map[size - 2] = '\0';
+        m_cursor = m_map + 2;         // Установка курсора в боевое положение
+        makeTerm(m_map, size);        // Защита от подтасовки некорректного файла
     }
     else
     {
         char *pool = (char *) malloc(5 + size);
-        char *cursor = initMap(f, pool);
+        char *cursor = pool + 3;
 
-
-        fscanf(f, "%*[^-0-9A-Za-z_$@+&]");
-        while (fscanf(f, "%[-0-9A-Za-z_$@+&]", cursor) != EOF)
+        skipTrash(f);
+        while (fscanf(f, wordRegExp, cursor) != EOF)
         {
             unsigned int len = strlen(cursor);
-            len = len > 255 ? 255 : len;
-            *(cursor - 1) = len;
+            len = len > 255 ? 255 : len;       // Усечение строк
+
+            *(cursor - 1) = len;               // Запись слева от строки ее размера
             cursor += len + 1;
-            fscanf(f, "%*[^-0-9A-Za-z_$@+&]");
+
+            skipTrash(f);
         }
-        *cursor = '\0';
 
         m_size = cursor - pool + 1;
         m_map = (char *) realloc(pool, m_size);
         m_cursor = m_map + 2;
+
+        makeHeader(m_map);
+        makeTerm(m_map, m_size);
         strToLower(m_cursor + 1);
+
     }
 
     fclose(f);
 }
 
-char *WordsMap::getWord()
-{
-    unsigned char lenNext = *(m_cursor - 2);
-    m_cursor += *(m_cursor - 1) + 1;
-    *(m_cursor - 1) = lenNext;
-    *(m_cursor - 2) =  *(m_cursor + lenNext);
-    *(m_cursor + lenNext) = '\0';
+/**
+ * Преобразование текущей позиции в отображении к стандартной null-терминированной строке.
+ * ВНИМАНИЕ: Выход за границы дампа не контролируется, лежит на плечах клиентского кода.
+ * Признак конца дампа - длина очередной отданной строки - 0 (под возвращенным указателем нулевой байт)
+ */
+char *WordsMap::getWord()                     // Сначала сдвигаем курсор (потому нужен охранник), потом
+{                                             // ... отдаем указатель.
+    unsigned char lenNext = *(m_cursor - 2);  // Длина строки, очередной для следующего запроса на два байта левее.
+    m_cursor += *(m_cursor - 1) + 1;          // Переход в начало строки, очередной для данного запроса
+    *(m_cursor - 1) = lenNext;                // Повторим структуру - запишем длину текущей строки слева от ее головы
+    *(m_cursor - 2) =  *(m_cursor + lenNext); // ... и длину следующей строки - еще на байт левее
+    *(m_cursor + lenNext) = '\0';             // Перед возвратом стандартизируем строку
 
     return m_cursor;
 }
