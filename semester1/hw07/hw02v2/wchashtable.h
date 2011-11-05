@@ -8,10 +8,10 @@
  * Модуль является клиентом модуля wordcounter.v2
  */
 
-//const int hashTableSizeP2 = 3;  // DEBUG MODE. Release value is 11
-const int hashTableSizeP2 = 11;
-//const int sizeOfBlock = 4;      // DEBUG MODE. Release value is 512
-const int sizeOfBlock = 512;
+//const int hashTableSizeP2 = 3;  // DEBUG MODE. Release value is 13
+const int hashTableSizeP2 = 13;
+//const int sizeOfBlock = 4;      // DEBUG MODE. Release value is 128
+const int sizeOfBlock = 128;
 
 const int hashTableSize = 1 << hashTableSizeP2;
 

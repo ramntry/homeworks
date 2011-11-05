@@ -46,6 +46,7 @@ WCHachTable::~WCHachTable()
  * Хеширование методом умножений. Кормен и Лейзерсон, "Алгоритмы. Построение и анализ", 1-ое изд., перевод МЦНМО,
  * стр. 222.
  */
+/*
 unsigned int WCHachTable::hashFunction(const char *word)
 {
     unsigned int A2w = 2654435769;  // int(((sqrt(5) - 1) / 2) * 2**32)
@@ -63,6 +64,58 @@ unsigned int WCHachTable::hashFunction(const char *word)
     }
     hash ^= (accumulator * A2w) >> (32 - hashTableSizeP2);
 
+    return hash;
+}
+unsigned int WCHachTable::hashFunction(const char *word)
+{
+    unsigned long long A2w = 11400714819323199488ULL;  // int((sqrt(5) - 1) / 2 * 2**64)
+    unsigned long long hash = 0;
+    int len = strlen(word);
+    int i = 0;
+    for (; i < len - 7; i += 8)
+        hash ^= *((unsigned long long *) (word + i)) * A2w;
+    word += i;
+    len -= i;
+    if (len > 3)
+    {
+        hash ^= *((unsigned int*) word) * A2w;
+        word += 4;
+        len -= 4;
+    }
+    if (len > 1)
+    {
+        hash ^= *((unsigned short *) word) * A2w;
+        word += 2;
+        len -= 2;
+    }
+    if (len > 0)
+        hash ^= *((unsigned char *) word) * A2w;
+
+    hash >>= (64 - hashTableSizeP2);
+    return hash;
+}
+*/
+
+unsigned int WCHachTable::hashFunction(const char *word)
+{
+    unsigned int A2w = 2654435769;  // int(((sqrt(5) - 1) / 2) * 2**32)
+    unsigned int hash = 0;
+    int len = strlen(word);
+    int i = 0;
+    for (; i < len - 3; i += 4)
+        hash ^= *((unsigned int *) (word + i)) * A2w;
+    word += i;
+    len -= i;
+    if (len > 1)
+    {
+        hash ^= *((unsigned short *) word) * A2w;
+        word += 2;
+        len -= 2;
+    }
+    if (len > 0)
+        hash ^= *((unsigned char *) word) * A2w;
+
+    hash >>= (32 - hashTableSizeP2);
     return hash;
 }
 
