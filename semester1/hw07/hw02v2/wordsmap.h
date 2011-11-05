@@ -10,6 +10,7 @@ public:
     ~WordsMap() { free(m_map); }
     char *getWord();
     void dump(const char *filename);
+    unsigned int getSize() { return m_size; }
 
 private:
     char *m_map;

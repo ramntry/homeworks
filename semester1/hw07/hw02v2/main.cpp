@@ -3,11 +3,14 @@
 #include "wchashtable.h"
 #include "wordsmap.h"
 
+inline void fl() { fflush(stdout); }
+
 int main(int argc, char **argv) try
 {
     bool isDump = false;
     bool onlySaveDump = false;
-    const char *filename = NULL;
+    char *filename = new char[268];
+    filename[0] = '\0';
 
     switch (argc)
     {
@@ -17,35 +20,51 @@ int main(int argc, char **argv) try
                "   -l  LOAD the input file as a dump and analyze its\n");
         return 1;
     case 2:
-        filename     = argv[1];
+        strcpy(filename,       argv[1]);
         break;
     default:
         onlySaveDump = !strcmp(argv[1], "-d");
         isDump       = !strcmp(argv[1], "-l");
-        filename     = argv[2];
+        strcpy(filename,       argv[2]);
     }
 
+    printf("Loading..."); fl();
     WordsMap wmap(filename, isDump);
+
     if (onlySaveDump)
     {
-        char *fname = new char[strlen(filename) + 10];
-        strcpy(fname, filename);
-        strcat(fname, ".wordsmap");
-        wmap.dump(fname);
-        delete[] fname;
+        strcat(filename, ".wordsmap");
+        wmap.dump(filename);
+        printf(" dump [OK]\n"); fl();
     }
     else
     {
+        printf("\nCounting.."); fl();
         WCHachTable hashTable;
+
+        int counter = 0;
         char *currentWord = wmap.getWord();
         while (*currentWord)
         {
-            hashTable.put(currentWord);
-            currentWord = wmap.getWord();
+/* Мега- */ hashTable.put(currentWord);
+/* моло- */ currentWord = wmap.getWord();
+/* тилка */
+            counter++;
+            if (counter % 250000 == 0)   // Одна точка на мегабайт - приблизительно
+                putchar('.'); fl();
         }
-        hashTable.printResult();
+        printf("      [OK]\n\n"); fl();
+
+        unsigned int uniqWords = hashTable.printResult();
+        printf("\nTotal: %u words about %.3lf letters each"
+               "\n       with average frequency %.3lf\n\n",
+               counter,
+              (double) (wmap.getSize() - 4) / counter - 1,
+              (double) counter / uniqWords);
         hashTable.printStat();
     }
+
+    delete[] filename;
 
     return 0;
 }
