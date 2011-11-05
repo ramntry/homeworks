@@ -2,7 +2,8 @@
 #include <cstring>
 #include <cstdio>
 
-inline Direction strCmp(const char *fst, const char *snd)
+inline
+Direction strCmp(const char *fst, const char *snd)
 {
         // Почему здесь перестает работать стандартная strcmp - не ясно
         int i = 0;
@@ -31,8 +32,8 @@ int append(WordBST *tree, const char *word)
         return 0;
     tree->counters[tree->top] = 1;                // инициализация счетчика
     WordNode *topNode = tree->nodes + tree->top;
-    topNode->childs[0] = 0;                       // ... и зануление индексов сыновей
-    topNode->childs[1] = 0;
+    topNode->childs[toLeftChild] = 0;             // ... и зануление индексов сыновей
+    topNode->childs[toRightChild] = 0;
 
     int writed = 0;
     while (word[writed] && writed < freeSpace)    // Копирование строки с контролем выхода за границы дерева
@@ -61,8 +62,8 @@ int handle(WordBST *tree, const char *word)
         {
             unsigned int newNodeIndex = tree->top;             // Запомним индекс добавляемого элемента
             int writed = append(tree, word);                   // Попытаемся его разместить
-            if (word[writed])                                  // Если удачно -
-                return -1;
+            if (word[writed])
+                return -1;                                     // Если удачно -
             tree->nodes[index].childs[resCmp] = newNodeIndex;  // ... прописываемся у родителя
             return 0;
         }
