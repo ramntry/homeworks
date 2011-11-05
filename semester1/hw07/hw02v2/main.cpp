@@ -50,7 +50,7 @@ int main(int argc, char **argv) try
 /* моло- */ currentWord = wmap.getWord();
 /* тилка */
             counter++;
-            if (counter % 250000 == 0)   // Одна точка на мегабайт - приблизительно
+            if (counter % 180000 == 0)   // Одна точка на мегабайт - приблизительно
                 putchar('.'); fl();
         }
         printf("      [OK]\n\n"); fl();
