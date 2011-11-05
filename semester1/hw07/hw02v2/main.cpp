@@ -32,6 +32,7 @@ int main(int argc, char **argv) try
         strcpy(fname, filename);
         strcat(fname, ".wordsmap");
         wmap.dump(fname);
+        delete[] fname;
     }
     else
     {
@@ -60,4 +61,5 @@ catch (FileNotFoundException)
 catch (WordBSTOverflowExceptionToManyWords)
 {
     fprintf(stderr, "E: chain hash table overflowing\n");
+    return 2;
 }
