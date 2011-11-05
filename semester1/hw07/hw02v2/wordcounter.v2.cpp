@@ -5,7 +5,7 @@
 inline
 Direction strCmp(const char *fst, const char *snd)
 {
-        // Почему здесь перестает работать стандартная strcmp - не ясно
+        // Почему здесь медленнее работает стандартная strcmp - не ясно
         int i = 0;
         for (; fst[i] && fst[i] == snd[i]; i++);
         if (fst[i] < snd[i])
@@ -14,7 +14,6 @@ Direction strCmp(const char *fst, const char *snd)
                 return toRightChild;      // word больше. Нам в правую ветвь.
         return stopSearch;
 }
-
 inline int calcFreeSpace(unsigned int top)
 {
     return capacityWordBST * sizeof(int) - addFieldsSize - 1 - top * sizeof(int);

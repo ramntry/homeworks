@@ -1,5 +1,6 @@
 #include "wchashtable.h"
 #include <cstring>
+#include <cstdio>
 
 MemoryPool::~MemoryPool()
 {
@@ -99,28 +100,21 @@ int WCHachTable::printResult()
     return currentNumber - 1;
 }
 
-double WCHachTable::getAvrFillingTrees()
+void WCHachTable::printStat()
 {
     double treesNumber = 0.0;
-    double accumulator = 0.0;
-    for (int i = 0; i < hashTableSize; i++)
-        if (m_hashTable[i])
-        {
-            accumulator += (double) (m_hashTable[i]->top) / capacityWordBST;
-            treesNumber++;
-        }
-    return accumulator / treesNumber;
-}
-
-double WCHachTable::getMaxFillingTrees()
-{
-    double current = 0.0;
     double maximum = 0.0;
+    double accumulator = 0.0;
+    double current = 0.0;
     for (int i = 0; i < hashTableSize; i++)
         if (m_hashTable[i])
         {
             current = (double) (m_hashTable[i]->top) / capacityWordBST;
             maximum = current > maximum ? current : maximum;
+            accumulator += current;
+            treesNumber++;
         }
-    return maximum;
+
+    printf("Load factor: %.3lf\nAverage filling chains: %.3lf\nMaximum filling chains: %.3lf\n",
+          (double) m_size / hashTableSize, accumulator / treesNumber, maximum);
 }

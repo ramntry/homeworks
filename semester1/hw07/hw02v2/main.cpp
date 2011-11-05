@@ -43,11 +43,8 @@ int main(int argc, char **argv) try
             hashTable.put(currentWord);
             currentWord = wmap.getWord();
         }
-
         hashTable.printResult();
-        printf("Load factor: %.3lf\n", hashTable.getLoadFactor());
-        printf("Average filling chains: %.3lf\n", hashTable.getAvrFillingTrees());
-        printf("Maximum filling chains: %.3lf\n", hashTable.getMaxFillingTrees());
+        hashTable.printStat();
     }
 
     return 0;

@@ -56,9 +56,7 @@ public:
 
     void put(const char *word);       // Подать строку на обработку
     int printResult();                // Распечатать гистограмму частот вхождений строк
-    double getLoadFactor() { return (double) m_size / hashTableSize; }
-    double getAvrFillingTrees();
-    double getMaxFillingTrees();
+    void printStat();
 
 protected:
     unsigned int hashFunction(const char *word);
