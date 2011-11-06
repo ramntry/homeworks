@@ -56,7 +56,7 @@ int main(int argc, char **argv) try
         printf("      [OK]\n\n"); fl();
 
         unsigned int uniqWords = hashTable.printResult();
-        printf("\nTotal: %u words about %.3lf letters each"
+        printf("\nTotal: %u words about %.1lf letters each"
                "\n       with average frequency %.3lf\n\n",
                counter,
               (double) (wmap.getSize() - 4) / counter - 1,

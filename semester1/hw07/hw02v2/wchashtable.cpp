@@ -114,10 +114,10 @@ void WCHachTable::printStat()
     double avrFilling  = accumulator / treesNumber;
     printf
     (
-        "Average word size about: %.3lf\n"
+        "Average word size about: %.1lf\n"
         "Load factor: %.3lf\n"
-        "Average filling chains : %.3lf\n"
-        "Maximum filling chains : %.3lf\n"
+        "Average filling chains: %.3lf\n"
+        "Maximum filling chains: %.3lf\n"
         ,avrWordSize ,loadFactor ,avrFilling ,maximum
     );
 }
