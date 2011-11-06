@@ -14,6 +14,7 @@ Direction strCmp(const char *fst, const char *snd)
                 return toRightChild;      // word больше. Нам в правую ветвь.
         return stopSearch;
 }
+
 inline int calcFreeSpace(unsigned int top)
 {
     return capacityWordBST * sizeof(int) - addFieldsSize - 1 - top * sizeof(int);
