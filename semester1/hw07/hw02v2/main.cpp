@@ -66,7 +66,7 @@ int main(int argc, char **argv) try
             currentWord = wmap.getWord();
 
             counter++;
-            if (!silentMode && counter % 180000 == 0)   // Одна точка на мегабайт - приблизительно
+            if (!silentMode && counter % 180000 == 0)   // Приблизительно одна точка на мегабайт
                 log(".");
         }
         silentMode || log("      [OK]\n\n");
