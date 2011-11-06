@@ -109,9 +109,15 @@ void WCHachTable::printStat()
             accumulator += current;
             treesNumber++;
         }
-
-    printf("Load factor: %.3lf\n"
-           "Average filling chains: %.3lf\n"
-           "Maximum filling chains: %.3lf\n",
-          (double) m_size / hashTableSize, accumulator / treesNumber, maximum);
+    double avrWordSize = accumulator * usefulCapacityWBST / m_size - averageLoss;
+    double loadFactor  = (double) m_size / hashTableSize;
+    double avrFilling  = accumulator / treesNumber;
+    printf
+    (
+        "Average word size about: %.3lf\n"
+        "Load factor: %.3lf\n"
+        "Average filling chains : %.3lf\n"
+        "Maximum filling chains : %.3lf\n"
+        ,avrWordSize ,loadFactor ,avrFilling ,maximum
+    );
 }

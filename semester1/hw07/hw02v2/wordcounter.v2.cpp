@@ -37,10 +37,10 @@ int append(WordBST *tree, const char *word)
     int writed = 0;
     while (word[writed] && writed < freeSpace)    // Копирование строки с контролем выхода за границы дерева
     {
-       (&(topNode->firstLetter))[writed] = word[writed];
-        writed++;
+       topNode->word[writed] = word[writed];
+       writed++;
     }
-    (&(topNode->firstLetter))[writed] = '\0';     // Гарантированное терминирование строки нулем.
+    topNode->word[writed] = '\0';                 // Гарантированное терминирование строки нулем.
     tree->top += calcAllocatedSpace(writed);      // Безопасное смещение top
 
     return writed;
@@ -51,7 +51,7 @@ int handle(WordBST *tree, const char *word)
     unsigned int index = 0;
     for (;;)
     {
-        Direction resCmp = strCmp(word, &(tree->nodes[index].firstLetter));
+        Direction resCmp = strCmp(word, tree->nodes[index].word);
         if (resCmp == stopSearch)  // если строки равны
             return (tree->counters[index])++;
 
@@ -78,7 +78,7 @@ int printWordBST(WordBST *tree, int enumStarts, unsigned int startsWith)
 
     if (currentNum != -1)
         printf("%5d:", currentNum++);
-    printf("%20s - %d\n", &(tree->nodes[startsWith].firstLetter), tree->counters[startsWith]);
+    printf("%20s - %d\n", tree->nodes[startsWith].word, tree->counters[startsWith]);
 
     if (tree->nodes[startsWith].childs[toRightChild])
         printWordBST(tree, currentNum, tree->nodes[startsWith].childs[toRightChild]);
