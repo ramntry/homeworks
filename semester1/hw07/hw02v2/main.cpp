@@ -71,7 +71,7 @@ int main(int argc, char **argv) try
         }
         silentMode || log("      [OK]\n\n");
 
-/*        unsigned int uniqWords = hashTable.printResult();
+        unsigned int uniqWords = hashTable.printResult();
         if (!silentMode)
         {
             printf("\nTotal: %u words about %.1lf letters each"
@@ -80,7 +80,7 @@ int main(int argc, char **argv) try
                   (double) (wmap.getSize() - 4) / counter - 1,
                   (double) counter / uniqWords);
             hashTable.printStat();
-        } */
+        }
     }
     delete[] filename;
 
