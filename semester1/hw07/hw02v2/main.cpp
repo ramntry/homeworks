@@ -3,65 +3,84 @@
 #include "wchashtable.h"
 #include "wordsmap.h"
 
-inline void fl() { fflush(stdout); }
+inline bool log(const char *message) { printf(message); return fflush(stdout); }
+
+bool getArgs(int argc, char **argv, char *filename, bool &isDump, bool &onlySaveDump, bool &silentMode)
+{
+    switch (argc)
+    {
+    case 1:
+        printf("Usage: %s [-d|-l|-s] FILE\nPrint word counts for FILE\n%s%s%s", argv[0],
+               "   -d  just save the DUMP file. Nothing to analyze\n",
+               "   -l  LOAD the input file as a dump and analyze its\n",
+               "   -s  SILENT mode - print only results\n");
+
+        return false;
+    case 2:
+        strcpy(filename,       argv[1]);
+        return true;
+    case 3:
+        onlySaveDump = !strcmp(argv[1], "-d");
+        isDump       = !strcmp(argv[1], "-l");
+        silentMode   = !strcmp(argv[1], "-s");
+        strcpy(filename,       argv[2]);
+        return true;
+    default:
+        onlySaveDump = !strcmp(argv[1], "-d") || !strcmp(argv[2], "-d");
+        isDump       = !strcmp(argv[1], "-l") || !strcmp(argv[2], "-l");
+        silentMode   = !strcmp(argv[1], "-s") || !strcmp(argv[2], "-s");
+        strcpy(filename,       argv[3]);
+        return true;
+    }
+}
 
 int main(int argc, char **argv) try
 {
     bool isDump = false;
     bool onlySaveDump = false;
+    bool silentMode = false;
     char *filename = new char[268];
     filename[0] = '\0';
-
-    switch (argc)
-    {
-    case 1:
-        printf("Usage: %s [-d|-l] FILE\nPrint word counts for FILE\n%s%s", argv[0],
-               "   -d  just save the DUMP file. Nothing to analyze\n",
-               "   -l  LOAD the input file as a dump and analyze its\n");
+    if(!getArgs(argc, argv, filename, isDump, onlySaveDump, silentMode))
         return 1;
-    case 2:
-        strcpy(filename,       argv[1]);
-        break;
-    default:
-        onlySaveDump = !strcmp(argv[1], "-d");
-        isDump       = !strcmp(argv[1], "-l");
-        strcpy(filename,       argv[2]);
-    }
 
-    printf("Loading..."); fl();
+    silentMode || log("Loading...");
     WordsMap wmap(filename, isDump);
 
     if (onlySaveDump)
     {
         strcat(filename, ".wordsmap");
         wmap.dump(filename);
-        printf(" dump [OK]\n"); fl();
+        silentMode || log(" dump [OK]\n");
     }
     else
     {
-        printf("\nCounting.."); fl();
+        silentMode || log("\nCounting..");
         WCHachTable hashTable;
 
         int counter = 0;
         char *currentWord = wmap.getWord();
         while (*currentWord)
         {
-/* Мега- */ hashTable.put(currentWord);
-/* моло- */ currentWord = wmap.getWord();
-/* тилка */
+            hashTable.put(currentWord);
+            currentWord = wmap.getWord();
+
             counter++;
-            if (counter % 180000 == 0)   // Одна точка на мегабайт - приблизительно
-                putchar('.'); fl();
+            if (!silentMode && counter % 180000 == 0)   // Одна точка на мегабайт - приблизительно
+                log(".");
         }
-        printf("      [OK]\n\n"); fl();
+        silentMode || log("      [OK]\n\n");
 
         unsigned int uniqWords = hashTable.printResult();
-        printf("\nTotal: %u words about %.1lf letters each"
-               "\n       with average frequency %.3lf\n\n",
-               counter,
-              (double) (wmap.getSize() - 4) / counter - 1,
-              (double) counter / uniqWords);
-        hashTable.printStat();
+        if (!silentMode)
+        {
+            printf("\nTotal: %u words about %.1lf letters each"
+                   "\n       with average frequency %.3lf\n\n",
+                   counter,
+                  (double) (wmap.getSize() - 4) / counter - 1,
+                  (double) counter / uniqWords);
+            hashTable.printStat();
+        }
     }
     delete[] filename;
 

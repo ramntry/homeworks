@@ -64,7 +64,6 @@ WordsMap::WordsMap(const char *filename, bool isDump)
     {
         m_map = (char *) malloc(size);
         m_size = fread(m_map, 1, size, f);
-        m_cursor = m_map + 2;              // Установка курсора в боевое положение
         makeTerm(m_map, m_size);           // Защита от подтасовки некорректного файла
     }
     else
@@ -84,12 +83,13 @@ WordsMap::WordsMap(const char *filename, bool isDump)
 
         m_size = cursor - m_map + 1;
         m_map = (char *) realloc(m_map, m_size);
-        m_cursor = m_map + 2;
 
         makeHeader(m_map);
         makeTerm(m_map, m_size);
-        strToLower(m_cursor + 1);
-    }
+        strToLower(m_map + 3);
+    }                               // Под m_map будем хранить длину следующей на выдачу строки
+    m_lenCurrent = m_map + 1;       // ... тут - длину только что выданной строки
+    m_cursor = m_map + 2;           // ... здесь - первый символ только что выданной строки
     fclose(f);
 }
 
@@ -98,20 +98,22 @@ WordsMap::WordsMap(const char *filename, bool isDump)
  * ВНИМАНИЕ: Выход за границы дампа не контролируется, лежит на плечах клиентского кода.
  * Признак конца дампа - длина очередной отданной строки - 0 (под возвращенным указателем нулевой байт)
  */
-char *WordsMap::getWord()                     // Сначала сдвигаем курсор (потому нужен охранник), потом
-{                                             // ... отдаем указатель.
-    unsigned char lenNext = *(m_cursor - 2);  // Длина строки, очередной для следующего запроса на два байта левее.
-    m_cursor += *(m_cursor - 1) + 1;          // Переход в начало строки, очередной для данного запроса
-    *(m_cursor - 1) = lenNext;                // Повторим структуру - запишем длину текущей строки слева от ее головы
-    *(m_cursor - 2) =  *(m_cursor + lenNext); // ... и длину следующей строки - еще на байт левее
-    *(m_cursor + lenNext) = '\0';             // Перед возвратом стандартизируем строку
+char *WordsMap::getWord()
+    {                           // Шаг вперед:
+    m_cursor += *m_lenCurrent + 1;            // Переход в начало строки данного запроса
+    char *lenNextNext = m_cursor + *m_map;    // Длина строки следующего запроса
 
-    return m_cursor;
+    *m_lenCurrent = *m_map;                   // Теперь длина текущей строки иная
+    *m_map =  *lenNextNext;                   // ... как и следующей
+    *lenNextNext = '\0';                      // С другой стороны - это крайний байт запрошенной строки.
+
+    return m_cursor;            // Отдали результат
 }
 
 void WordsMap::dump(const char *filename)
 {
     FILE *f = fopen(filename, "w");
-    fwrite(m_map, 1, m_size, f);
+    fwrite(m_map, 1, 2, f);                               // Сливаем в файл заголовок
+    fwrite(m_cursor, 1, m_size - (m_cursor - m_map), f);  // ... и всю неиспорченную getWord'ом часть образа
     fclose(f);
 }
