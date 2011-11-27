@@ -71,13 +71,14 @@ void dijkstraPrint(int **adjacencyMatrix, int numTowns)
                     distances[adj] = distances[current] + adjacencyMatrix[current][adj];
     }
     delete[] distances;
+    delete[] seen;
 }
 
 int main(void)
 {
     clog << "Homework 8, task 2. Dijkstra.\nEnter filename: ";
-    string fname;
-    cin >> fname;
+    string fname = "map";
+    //cin >> fname;
     ifstream in(fname.c_str());
     if (!in)
     {
