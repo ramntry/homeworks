@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <limits>
 
 using namespace std;
 
@@ -11,36 +12,20 @@ int **newAdjacencyMatrix(int numTowns)
     {
         rows[i] = new int[numTowns];
         for (int j = 0; j < numTowns; j++)
-        {
-            rows[i][j] = 1;
-            rows[i][j] <<= 31;
-            rows[i][j] = -99;
-        }
+            rows[i][j] = 0;
     }
     return rows;
 }
 
-int **copyAdjacencyMatrix(int **matrix, int numTowns)
+void fillAdjacencyMatrix(int **matrix, int numWays, istream &in)
 {
-    int **rows = new int *[numTowns];
-    for (int i = 0; i < numTowns; i++)
-    {
-        rows[i] = new int[numTowns];
-        for (int j = 0; j < numTowns; j++)
-            rows[i][j] = matrix[i][j];
-    }
-
-    return rows;
-}
-
-void fillAdjacencyMatrix(int **matrix, int numTowns, istream &in)
-{
-    for (int n = 0, i = 0, l = 0, j = 0; n < numTowns; n++)
+    for (int n = 0, i = 0, l = 0, j = 0; n < numWays; n++)
     {
         in >> i;
         in >> j;
         in >> l;
         matrix[i - 1][j - 1] = l;  // Нумерация на входе с 1
+        matrix[j - 1][i - 1] = l;
     }
 }
 
@@ -51,57 +36,68 @@ void deleteAdjacencyMatrix(int **matrix, int numTowns)
     delete[] matrix;
 }
 
-void print(int **matrix, int numTowns)
+int getNearest(int *distances, bool *seen, int numTowns)
 {
-    cout << '\n' << endl;
-    for (int i = 0; i < numTowns; i++)
-    {
-        for (int j = 0; j < numTowns; j++)
-            cout << setw(4) << matrix[i][j];
-        cout << endl;
-    }
-    cout << '\n' << endl;
+    int nearest = 0;
+    while (seen[nearest])  // Найдем первую непросмотренную вершину
+        nearest++;
+    for (int i = nearest; i < numTowns; i++) // среди всех непросмотренных найдем ближайшую
+        if (!seen[i] && (distances[i] <  distances[nearest]))
+                nearest = i;
+    return nearest;
 }
 
-void floyd(int **matrix, int numTowns)
+void dijkstraPrint(int **adjacencyMatrix, int numTowns)
 {
-    int **matrices[2];
-    matrices[0] = copyAdjacencyMatrix(matrix, numTowns);
-    matrices[1] = matrix;
-
-    for (int k = 0; k < numTowns; k++)
+    int *distances = new int[numTowns];
+    bool *seen = new bool[numTowns];
+    for (int i = 0; i < numTowns; i++)
     {
-        for (int i = 0; i < numTowns; i++)
-            for (int j = 0; j < numTowns; j++)
-                matrices[k % 2][i][j] = min(matrices[(k + 1) % 2][i][j],
-                                            matrices[(k + 1) % 2][i][k] + matrices[(k + 1) % 2][k][j]);
-        print(matrix, numTowns);
+        seen[i] = false;
+        distances[i] = numeric_limits<int>::max();
     }
+    distances[0] = 0;
 
-    deleteAdjacencyMatrix(matrices[0], numTowns);
+    for (int i = 0; i < numTowns; i++)
+    {
+        int current = getNearest(distances, seen, numTowns);  // получить ближайшую вершину из фронта сканирования
+        seen[current] = true;
+
+        cout << (current + 1) << " (" << distances[current] << ")" << endl;
+
+        for (int adj = 0; adj < numTowns; adj++)
+            if (adjacencyMatrix[current][adj] && !seen[adj])    // Для всех вершин, смежных со сканируемой
+                // Обновить путь, если путь через сканируемую в текущую смежную короче, чем он у смежной уже есть
+                if (distances[current] + adjacencyMatrix[current][adj] < distances[adj])
+                    distances[adj] = distances[current] + adjacencyMatrix[current][adj];
+    }
+    delete[] distances;
 }
 
 int main(void)
 {
-    ifstream in("map.txt");
+    clog << "Homework 8, task 2. Dijkstra.\nEnter filename: ";
+    string fname;
+    cin >> fname;
+    ifstream in(fname.c_str());
+    if (!in)
+    {
+        cerr << "File not found" << endl;
+        return 1;
+    }
+
     int numTowns = 0;
     in >> numTowns;
     int numWays = 0;
     in >> numWays;
 
     int **matrix = newAdjacencyMatrix(numTowns);
-    fillAdjacencyMatrix(matrix, numTowns, in);
+    fillAdjacencyMatrix(matrix, numWays, in);
     in.close();
 
-    print(matrix, numTowns);
-
-    floyd(matrix, numTowns);
-
-    print(matrix, numTowns);
-    for (int i = 0; i < numTowns; i++)
-        cout << matrix[0][i] << ' ';
-    cout << endl;
+    dijkstraPrint(matrix, numTowns);
 
     deleteAdjacencyMatrix(matrix, numTowns);
+
     return 0;
 }
