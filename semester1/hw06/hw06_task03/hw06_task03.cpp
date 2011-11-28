@@ -9,24 +9,24 @@ void printPolynome(double polynome[], int size, char topRow[], char bottomRow[],
     {
         int writedTop = 0;
         int writedBottom = 0;
-        if (fabs(polynome[i]) >= eps)
+        if (fabs(polynome[i]) >= eps)  // Нулевые элементы игорируем
         {
-            if (fabs(fabs(polynome[i]) - 1.0) < eps)
+            if (fabs(fabs(polynome[i]) - 1.0) < eps)  //  Единицы (с точностью до eps) обрабатываем особо
             {
-                if (!(i == 0 && polynome[0] > 0))
+                if (!(i == 0 && polynome[0] > 0))     // Перед первым x с коэффициентом +1.0 "+" ставить не будем
                     writedBottom += sprintf(bottomRow, polynome[i] > 0.0 ? "+" : "-");
-                if (powRank == 0)
-                sprintf(bottomRow + writedBottom, "%.*lf", precision, 1.0);
+                if (powRank == 0)                     // Если это свободный член - то пишем его
+                    sprintf(bottomRow + writedBottom, "%.*lf", precision, 1.0);
 
             }
             else
                 writedBottom += sprintf(bottomRow, "%+.*lf", precision, polynome[i]);
-            if (powRank > 0)
+            if (powRank > 0)  // Если в записи должен фигурировать "x"
             {
                 writedBottom += sprintf(bottomRow + writedBottom, "x");
-                topRow += sprintf(topRow, "%*s", writedBottom, "");
-                if (powRank > 1)
-                    writedTop += sprintf(topRow, "%d", powRank);
+                topRow += sprintf(topRow, "%*s", writedBottom, "");  // Верхнюю строку забиваем пробелами до нужной
+                if (powRank > 1)                                     // ... позиции
+                    writedTop += sprintf(topRow, "%d", powRank);     // Пишем в верхнюю строку неединичную степень
                 writedBottom += sprintf(bottomRow + writedBottom, "%*s", writedTop, "");
             }
         }
