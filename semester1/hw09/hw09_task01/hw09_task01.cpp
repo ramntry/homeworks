@@ -39,8 +39,8 @@ int main() try
     return 0;
 }
 
-catch (FileNotFoundException)
-{
-    fprintf(stderr, "File not found\n");
-    return 1;
-}
+    catch (FileNotFoundException)
+    {
+        fprintf(stderr, "File not found\n");
+        return 1;
+    }

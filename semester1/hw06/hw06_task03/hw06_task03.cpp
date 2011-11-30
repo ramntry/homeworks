@@ -20,7 +20,12 @@ void printPolynome(double polynome[], int size, char topRow[], char bottomRow[],
 
             }
             else
-                writedBottom += sprintf(bottomRow, "%+.*lf", precision, polynome[i]);
+            {
+                if (i == 0)
+                    writedBottom += sprintf(bottomRow, "%.*lf", precision, polynome[i]);
+                else
+                    writedBottom += sprintf(bottomRow, "%+.*lf", precision, polynome[i]);
+            }
             if (powRank > 0)  // Если в записи должен фигурировать "x"
             {
                 writedBottom += sprintf(bottomRow + writedBottom, "x");
