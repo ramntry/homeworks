@@ -4,7 +4,7 @@
 int main(void)
 {
     printf("Enter a double value: ");
-    char buf[10];
+    char buf[80];
     scanf("%s", buf);
 
     if (run(buf))
