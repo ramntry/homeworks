@@ -3,8 +3,8 @@ SOURCES += \
     polynomial.cpp
 
 HEADERS += \
-    polynomial.h \
-    list.h
+    polynomial.h
+
 
 
 
