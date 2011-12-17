@@ -1,8 +1,6 @@
 #include <cstdio>
 #include "binarysearchtree.h"
 
-using namespace std;
-
 int getItem()
 {
     int item = 0;
