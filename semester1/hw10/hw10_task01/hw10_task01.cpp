@@ -9,7 +9,7 @@ void opAdd(Polynomial *space)
 
     if (name >= 'a' && name <= 'z' && degree >= 0)
     {
-        space[name - 'a'].~Polynomial();
+        space[name - 'a'].clear();
         fillPolynomial(space[name - 'a'], degree);
     }
 }
@@ -27,7 +27,7 @@ void opRemove(Polynomial *space)
     char name = '"';
     scanf("%*[ \n\t\r]%c", &name);
     if (name >= 'a' && name <= 'z')
-        space[name - 'a'].~Polynomial();
+        space[name - 'a'].clear();
 }
 
 void opIsEqual(Polynomial *space)
@@ -56,7 +56,7 @@ void opSumm(Polynomial *space)
             printf("Destination not be the same with one of the arguments\n");
         else
         {
-            space[named - 'a'].~Polynomial();
+            space[named - 'a'].clear();
             addPolynomial(space[named - 'a'], space[namel - 'a'], space[namer - 'a']);
         }
     }

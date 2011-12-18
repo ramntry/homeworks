@@ -34,6 +34,10 @@ struct Polynomial
             current = current->next;
             delete tmp;
         }
+    }
+
+    void clear() {
+        this->~Polynomial();
         head = NULL;
         joinMe = &head;
     }
