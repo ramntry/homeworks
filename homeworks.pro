@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    semester1
+    semester1 \
+    semester2
+
 
