@@ -20,9 +20,7 @@ void fillAdjacencyMatrix(int **matrix, int numWays, istream &in)
 {
     for (int n = 0, i = 0, l = 0, j = 0; n < numWays; n++)
     {
-        in >> i;
-        in >> j;
-        in >> l;
+        in >> i >> j >> l;
         matrix[i - 1][j - 1] = l;  // Нумерация на входе с 1
         matrix[j - 1][i - 1] = l;
     }
