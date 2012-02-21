@@ -6,7 +6,9 @@ SUBDIRS += \
     hw08 \
     hw09 \
     hw10 \
-    hw11
+    hw11 \
+    hw01
+
 
 
 
