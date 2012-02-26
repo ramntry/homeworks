@@ -1,16 +1,16 @@
 #pragma once
 #include "list.h"
 
-class LinkedList : public List
+class ArrayList : public List
 {
 public:
-    LinkedList();
+    ArrayList();
     void insert(int position, ListItem item);
     void remove(int position);
     int find(ListItem item);
     int length();
     ListItem & operator [](int position);
-    ~LinkedList();
+    ~ArrayList();
 
 private:
     int mLength;

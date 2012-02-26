@@ -1,10 +1,14 @@
 HEADERS += \
     list.h \
-    linkedlist.h
+    linkedlist.h \
+    arraylist.h
 
 SOURCES += \
     linkedlist.cpp \
-    hw02_task01.cpp
+    hw02_task01.cpp \
+    arraylist.cpp
+
+
 
 
 

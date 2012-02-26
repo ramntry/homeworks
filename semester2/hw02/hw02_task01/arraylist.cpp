@@ -1,10 +1,10 @@
-#include "linkedlist.h"
+#include "arraylist.h"
 
-LinkedList::LinkedList() : mLength(0)
+ArrayList::ArrayList() : mLength(0)
 {
 }
 
-void LinkedList::insert(int position, ListItem item)
+void ArrayList::insert(int position, ListItem item)
 {
     if (position > mLength)
         throw ListOutOfBoundsException();
@@ -12,7 +12,7 @@ void LinkedList::insert(int position, ListItem item)
     mLength++;
 }
 
-void LinkedList::remove(int position)
+void ArrayList::remove(int position)
 {
     if (position >= mLength)
         throw ListOutOfBoundsException();
@@ -20,21 +20,21 @@ void LinkedList::remove(int position)
     mLength--;
 }
 
-int LinkedList::find(ListItem item)
+int ArrayList::find(ListItem item)
 {
     return itemNotFound;
 }
 
-int LinkedList::length()
+int ArrayList::length()
 {
     return mLength;
 }
 
-ListItem & LinkedList::operator [](int position)
+ListItem & ArrayList::operator [](int position)
 {
     throw ListOutOfBoundsException();
 }
 
-LinkedList::~LinkedList()
+ArrayList::~ArrayList()
 {
 }
