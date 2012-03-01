@@ -26,5 +26,17 @@ int main()
 
         delete stacks[k];
     }
+
+    Stack *bigStack = new StretchableStack(1);
+
+    for (int i = 0; i < 1024 * 1024; i++)
+        bigStack->push(i);
+    for (int i = 0; i < 900 * 1024; i++)
+        bigStack->pop();
+    for (int i = 0; i < 32 * 1024 * 1024; i++)
+        bigStack->push(i);
+
+    delete bigStack;
+
     return 0;
 }

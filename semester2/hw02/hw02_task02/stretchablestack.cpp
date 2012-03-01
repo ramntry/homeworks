@@ -1,4 +1,5 @@
 #include "stretchablestack.h"
+#include <iostream>
 
 StretchableStack::StackBlock::StackBlock(int newCapacity, StackBlock *prevBl) :
     array(new StackElement[newCapacity]),
@@ -34,7 +35,11 @@ void StretchableStack::push(StackElement value)
     if (mCurrentBlock->length == mCurrentBlock->capacity)
     {
         if (mCurrentBlock->next == NULL)
+        {
             mCurrentBlock->next = new StackBlock(mCurrentBlock->capacity * capacityMultiplier, mCurrentBlock);
+            std::cout << "StackBlock of " << mCurrentBlock->capacity << " elements is created" << std::endl;
+        } else
+            std::cout << "StackBlock of " << mCurrentBlock->capacity << " elements is reuse" << std::endl;
 
         mCurrentBlock = mCurrentBlock->next;
     }
