@@ -6,9 +6,7 @@ using namespace std;
 
 int main()
 {
-    List *lists[2];
-    lists[0] = new LinkedList();
-    lists[1] = new ArrayList(4);
+    List *lists[2] = { new LinkedList(), new ArrayList(4) };
 
     for (int k = 0; k < 2; k++)
     {
@@ -33,9 +31,9 @@ int main()
             cout << lists[k]->at(i) << " ";
 
         cout << endl << endl;
+
+        delete lists[k];
     }
 
-    delete lists[0];
-    delete lists[1];
     return 0;
 }

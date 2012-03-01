@@ -7,29 +7,26 @@ class LinkedList : public List
 public:
     LinkedList();
     ~LinkedList();
+
     void insert(int position, ListItem item);
     void remove(int position);
-    int find(ListItem item);
-    int length();
     ListItem & at(int position);
+
+    int find(ListItem item) const;
+    int length() const { return mLength; }
 
 private:
     class LinkedListNode
     {
     public:
-        LinkedListNode() :
-            mNext(NULL)
-        {}
-
-        LinkedListNode(ListItem value, LinkedListNode *next) :
-            mValue(value),
-            mNext(next)
-        {}
+        LinkedListNode();
+        LinkedListNode(ListItem value, LinkedListNode *next);
 
         ListItem mValue;
         LinkedListNode *mNext;
+    };
 
-    } *mHead;
+    LinkedListNode *mHead;
     int mLength;
 
     LinkedListNode *getNode(int position);

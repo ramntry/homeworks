@@ -1,9 +1,28 @@
 #include "linkedlist.h"
 
-LinkedList::LinkedList() : mLength(0)
+LinkedList::LinkedListNode::LinkedListNode() :
+    mNext(NULL)
+{}
+
+LinkedList::LinkedListNode::LinkedListNode(ListItem value, LinkedListNode *next) :
+    mValue(value),
+    mNext(next)
+{}
+
+LinkedList::LinkedListNode *LinkedList::getNode(int position)
 {
-    mHead = new LinkedList::LinkedListNode();
+    LinkedListNode *current = mHead;
+    for (int i = 0; i < position; i++)
+    {
+        current = current->mNext;
+    }
+    return current;
 }
+
+LinkedList::LinkedList() :
+    mHead(new LinkedList::LinkedListNode()),
+    mLength(0)
+{}
 
 LinkedList::~LinkedList()
 {
@@ -14,16 +33,6 @@ LinkedList::~LinkedList()
         delete current;
         current = tmp;
     }
-}
-
-LinkedList::LinkedListNode *LinkedList::getNode(int position)
-{
-    LinkedListNode *current = mHead;
-    for (int i = 0; i < position; i++)
-    {
-        current = current->mNext;
-    }
-    return current;
 }
 
 void LinkedList::insert(int position, ListItem item)
@@ -51,7 +60,15 @@ void LinkedList::remove(int position)
     mLength--;
 }
 
-int LinkedList::find(ListItem item)
+ListItem & LinkedList::at(int position)
+{
+    if (position >= mLength)
+        throw ListOutOfBoundsException();
+
+    return getNode(position)->mNext->mValue;
+}
+
+int LinkedList::find(ListItem item) const
 {
     LinkedListNode *current = mHead->mNext;
     for (int i = 0; current != NULL; i++)
@@ -61,17 +78,4 @@ int LinkedList::find(ListItem item)
         current = current->mNext;
     }
     return itemNotFound;
-}
-
-int LinkedList::length()
-{
-    return mLength;
-}
-
-ListItem & LinkedList::at(int position)
-{
-    if (position >= mLength)
-        throw ListOutOfBoundsException();
-
-    return getNode(position)->mNext->mValue;
 }

@@ -2,10 +2,9 @@
 
 ArrayList::ArrayList(int initCapacity) :
     mLength(0),
-    mCapacity(initCapacity)
-{
-    mArray = new ListItem[mCapacity];
-}
+    mCapacity(initCapacity),
+    mArray(new ListItem[mCapacity])
+{}
 
 ArrayList::~ArrayList()
 {
@@ -14,17 +13,19 @@ ArrayList::~ArrayList()
 
 void ArrayList::checkCapacity()
 {
-    if (mLength == mCapacity)
+    if (mLength != mCapacity)
+        return;
+
+    mCapacity *= capacityMultiplier;
+    ListItem *tmp = new ListItem[mCapacity];
+
+    for (int i = 0; i < mLength; i++)
     {
-        mCapacity *= capacityMultiplier;
-        ListItem *tmp = new ListItem[mCapacity];
-        for (int i = 0; i < mLength; i++)
-        {
-            tmp[i] = mArray[i];
-        }
-        delete[] mArray;
-        mArray = tmp;
+        tmp[i] = mArray[i];
     }
+
+    delete[] mArray;
+    mArray = tmp;
 }
 
 void ArrayList::insert(int position, ListItem item)
@@ -55,7 +56,14 @@ void ArrayList::remove(int position)
     mLength--;
 }
 
-int ArrayList::find(ListItem item)
+ListItem & ArrayList::at(int position)
+{
+    if (position >= mLength)
+        throw ListOutOfBoundsException();
+    return mArray[position];
+}
+
+int ArrayList::find(ListItem item) const
 {
     for (int i = 0; i < mLength; i++)
     {
@@ -63,16 +71,4 @@ int ArrayList::find(ListItem item)
             return i;
     }
     return itemNotFound;
-}
-
-int ArrayList::length()
-{
-    return mLength;
-}
-
-ListItem & ArrayList::at(int position)
-{
-    if (position >= mLength)
-        throw ListOutOfBoundsException();
-    return mArray[position];
 }
