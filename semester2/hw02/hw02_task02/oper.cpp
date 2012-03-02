@@ -7,16 +7,12 @@ using namespace std;
 Oper::Oper() :
     operand(0),
     isOperand(true)
-{
-    cout << "Oper() has been called" << endl;
-}
+{}
 
 Oper::Oper(double num) :
     operand(num),
     isOperand(true)
-{
-    cout << "Oper(double num) has been called, num = " << num << endl;
-}
+{}
 
 Oper::Oper(char op, bool isOper) :
     operation(op),
@@ -27,7 +23,6 @@ Oper::Oper(char op, bool isOper) :
         operand = NAN;  // isOperand тогда true, но operand == NAN,
         operation = op; // то за полезной информацией путь в operation
     }
-    cout << "Oper(char op, bool isOper) has been called, op = " << op << ", isOper = " << isOper << endl;
 }
 
 Oper::Oper(const Oper & src) :
@@ -45,4 +40,3 @@ void Oper::out()
     else
         cout << operation;
 }
-

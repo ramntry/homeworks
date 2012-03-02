@@ -49,7 +49,8 @@ int main()
     clog << "Testing of classes SimpleStack and StretchableStack:\n" << endl;
     StacksTest();
 
-    clog << "\nThis is a simple calculator. Enter an expression in postfix polish notation and send EOF: " << endl;
+    clog << "\nThis is a simple calculator.\n"
+         << "Enter an expression in postfix polish notation and send EOF: " << endl;
     StackMachine stackMachine;
 
     char ch = ' ';
@@ -70,14 +71,13 @@ int main()
             stackMachine.put(operand);
         } else {
             stackMachine.put(ch);
-            cout << "ch = " << ch << endl;
         }
     }
 
     if (stackMachine.isOK())
         cout << "= " << stackMachine.getValue() << endl;
     else
-        cerr << "Something is wrong is StackMachine, sorry" << endl;
+        cerr << "Something is wrong in StackMachine, sorry" << endl;
 
     return 0;
 }
