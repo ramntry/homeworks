@@ -1,12 +1,13 @@
 #include <iostream>
 #include "stretchablestack.h"
 #include "simplestack.h"
+#include "stackmachine.h"
 
 using namespace std;
 
-int StacksTest(int argc, char **argv)
+int StacksTest()
 {
-    Stack *stacks[2] = { new StretchableStack(1), new SimpleStack(5) };
+    Stack<int> *stacks[2] = { new StretchableStack<int>(1), new SimpleStack<int>(5) };
 
     for (int k = 0; k < 2; k++)
     {
@@ -29,7 +30,7 @@ int StacksTest(int argc, char **argv)
         delete stacks[k];
     }
 
-    Stack *bigStack = new StretchableStack(1);
+    Stack<int> *bigStack = new StretchableStack<int>(1);
 
     for (int i = 0; i < 1024 * 1024; i++)
         bigStack->push(i);
@@ -43,7 +44,41 @@ int StacksTest(int argc, char **argv)
     return 0;
 }
 
-int main(int argc, char **argv)
+int main()
 {
-    return StacksTest(argc, argv);
+    clog << "Testing of classes SimpleStack and StretchableStack:\n" << endl;
+    StacksTest();
+
+    clog << "\nThis is a simple calculator. Enter an expression in postfix polish notation and send EOF: " << endl;
+    StackMachine stackMachine;
+
+    char ch = ' ';
+    double operand = 0.0;
+
+    while (true)
+    {
+        do
+            cin >> ch;
+        while (isspace(ch));
+        if (!cin)
+            break;
+
+        if (isdigit(ch))
+        {
+            cin.putback(ch);
+            cin >> operand;
+            stackMachine.put(operand);
+        } else {
+            stackMachine.put(ch);
+            cout << "ch = " << ch << endl;
+        }
+    }
+
+    if (stackMachine.isOK())
+        cout << "= " << stackMachine.getValue() << endl;
+    else
+        cerr << "Something is wrong is StackMachine, sorry" << endl;
+
+    return 0;
 }
+

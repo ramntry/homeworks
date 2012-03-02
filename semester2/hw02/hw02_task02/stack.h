@@ -1,17 +1,16 @@
 #pragma once
 #include <cstdlib>
 
-typedef int StackElement;
-
+template <class T>
 class Stack
 {
 public:
     virtual ~Stack() {}
 
-    virtual void push(StackElement value) = 0;
-    virtual StackElement pop() = 0;
+    virtual void push(T value) = 0;
+    virtual T pop() = 0;
 
-    virtual StackElement look() const = 0;
+    virtual T look() const = 0;
     virtual bool isEmpty() const = 0;
     virtual int size() const = 0;
 };
