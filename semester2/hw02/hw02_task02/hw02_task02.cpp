@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int main()
+int StacksTest(int argc, char **argv)
 {
     Stack *stacks[2] = { new StretchableStack(1), new SimpleStack(5) };
 
@@ -13,7 +13,9 @@ int main()
         stacks[k]->push(10);
         stacks[k]->push(11);
         stacks[k]->push(12);
+        cout << "before pop() top is a " << stacks[k]->look() << endl;;
         stacks[k]->pop();
+        cout << "after pop() top is a " << stacks[k]->look() << endl;;
         stacks[k]->push(22);
         stacks[k]->push(13);
         stacks[k]->pop();
@@ -39,4 +41,9 @@ int main()
     delete bigStack;
 
     return 0;
+}
+
+int main(int argc, char **argv)
+{
+    return StacksTest(argc, argv);
 }

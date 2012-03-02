@@ -14,6 +14,14 @@ StackElement SimpleStack::pop()
     return mArray[--mSize];
 }
 
+StackElement SimpleStack::look() const
+{
+    if (mSize == 0)
+        throw new StackUnderflowException();
+
+    return mArray[mSize - 1];
+}
+
 void SimpleStack::push(StackElement value)
 {
     if (mSize == mCapacity)

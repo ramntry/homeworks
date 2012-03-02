@@ -1,7 +1,6 @@
 #pragma once
 #include "stack.h"
 
-
 class StretchableStack : public Stack
 {
 public:
@@ -11,6 +10,7 @@ public:
     void push(StackElement value);
     StackElement pop();
 
+    StackElement look() const;
     bool isEmpty() const;
     int size() const;
 

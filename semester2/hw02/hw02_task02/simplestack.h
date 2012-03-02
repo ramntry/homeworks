@@ -10,6 +10,7 @@ public:
     void push(StackElement value);
     StackElement pop();
 
+    StackElement look() const;
     bool isEmpty() const { return mSize == 0; }
     int size() const { return mSize; }
 

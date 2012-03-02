@@ -58,6 +58,18 @@ StackElement StretchableStack::pop()
     return mCurrentBlock->array[--mCurrentBlock->length];
 }
 
+StackElement StretchableStack::look() const
+{
+    StackBlock *top = mCurrentBlock;
+    if (top->length == 0)
+        top = top->prev;
+
+    if (top == NULL)
+        throw new StackUnderflowException();
+
+    return top->array[top->length - 1];
+}
+
 int StretchableStack::size() const
 {
     int accumulator = 0;
