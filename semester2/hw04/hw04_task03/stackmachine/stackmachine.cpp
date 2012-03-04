@@ -48,7 +48,10 @@ void StackMachine::put(char operation)
     if (stack.size() < 2)  // Пока работают только бинарные
         noError = false;   // операции
     else
-        engine(operation, stack.pop(), stack.pop());
+    {
+        double leftOp = stack.pop();
+        engine(operation, leftOp, stack.pop());
+    }
 }
 
 void StackMachine::put(Oper elem)
