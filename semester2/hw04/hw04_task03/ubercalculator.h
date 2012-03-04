@@ -4,8 +4,7 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QLayout>
 #include <QSignalMapper>
-
-enum SpecialOperands { changeSign = 11, decimalDot };
+#include "simpleparser.h"
 
 class UberButton : public QPushButton
 {
@@ -28,8 +27,8 @@ public:
     ~UberCalculator();
 
 public slots:
-    void testDisplay(int num);
     void testDisplay(QString str);
+    void displayOperand(double operand);
 
 private:
     void createOperandsButtons(QGridLayout *placeHere);
@@ -41,4 +40,6 @@ private:
     QSignalMapper *operationsButtons; /// +, -, *, ^, /, =
     UberButton *cancelButton;         /// C
     UberButton *cancelOperandButton;  /// CE
+
+    SimpleParser *parser;
 };

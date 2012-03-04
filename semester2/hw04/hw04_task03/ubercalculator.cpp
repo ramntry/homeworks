@@ -1,15 +1,17 @@
-#include "ubercalculator.h"
 #include <QtGui/QLayout>
+#include "ubercalculator.h"
 
 UberCalculator::UberCalculator(QWidget *parent)
     : QWidget(parent)
 
-    , displayLine(new QLineEdit())
+    , displayLine(new QLineEdit("0"))
 
     , operandsButtons(new QSignalMapper())
     , operationsButtons(new QSignalMapper())
     , cancelButton(new UberButton("C"))
     , cancelOperandButton(new UberButton("CE"))
+
+    , parser(new SimpleParser())
 {
     displayLine->setReadOnly(true);
     displayLine->setAlignment(Qt::AlignRight);
@@ -28,7 +30,9 @@ UberCalculator::UberCalculator(QWidget *parent)
     setLayout(mainLayout);
     setWindowTitle(tr("Uber Calculator"));
 
-    connect(operandsButtons, SIGNAL(mapped(int)), this, SLOT(testDisplay(int)));
+    connect(operandsButtons, SIGNAL(mapped(int)), parser, SLOT(putNumber(int)));
+    connect(parser, SIGNAL(valueChanged(double)), this, SLOT(displayOperand(double)));
+    connect(cancelOperandButton, SIGNAL(clicked()), parser, SLOT(cancel()));
     connect(operationsButtons, SIGNAL(mapped(QString)), this, SLOT(testDisplay(QString)));
 }
 
@@ -60,15 +64,15 @@ void UberCalculator::createOperationsButtons(QGridLayout *placeHere)
 
 UberCalculator::~UberCalculator()
 {
-    
-}
-
-void UberCalculator::testDisplay(int num)
-{
-    displayLine->setText(QString::number(num));
+    delete parser;
 }
 
 void UberCalculator::testDisplay(QString str)
 {
     displayLine->setText(str);
+}
+
+void UberCalculator::displayOperand(double operand)
+{
+    displayLine->setText(QString::number(operand, 'g', 14));
 }
