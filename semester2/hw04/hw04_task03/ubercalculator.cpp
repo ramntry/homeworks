@@ -1,5 +1,5 @@
 #include "ubercalculator.h"
-#include <QtGui/QVBoxLayout>
+#include <QtGui/QLayout>
 
 UberCalculator::UberCalculator(QWidget *parent)
     : QWidget(parent)
@@ -11,10 +11,14 @@ UberCalculator::UberCalculator(QWidget *parent)
     , cancelButton(new QPushButton("C"))
     , cancelOperandButton(new QPushButton("CE"))
 {
-    displayLine->setReadOnly(true);
+    QGridLayout *buttonsLayout = new QGridLayout();
+
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(displayLine);
+    mainLayout->addLayout(buttonsLayout);
+
+    displayLine->setReadOnly(true);
 
     setLayout(mainLayout);
     setWindowTitle(tr("Uber Calculator"));

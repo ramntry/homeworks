@@ -49,7 +49,7 @@ void StackMachine::put(char operation)
         noError = false;   // операции
     else
     {
-        double leftOp = stack.pop();
+        Oper leftOp = stack.pop();
         engine(operation, leftOp, stack.pop());
     }
 }
