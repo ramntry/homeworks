@@ -2,7 +2,22 @@
 #include <QtGui/QWidget>
 #include <QtGui/QPushButton>
 #include <QtGui/QLineEdit>
+#include <QtGui/QLayout>
 #include <QSignalMapper>
+
+enum SpecialOperands { changeSign = 11, decimalDot };
+
+class UberButton : public QPushButton
+{
+    Q_OBJECT
+
+public:
+    UberButton(QString label = "", QWidget *parent = 0)
+        : QPushButton(label, parent)
+    {
+        setMinimumSize(50, 40);
+    }
+};
 
 class UberCalculator : public QWidget
 {
@@ -12,11 +27,18 @@ public:
     UberCalculator(QWidget *parent = 0);
     ~UberCalculator();
 
+public slots:
+    void testDisplay(int num);
+    void testDisplay(QString str);
+
 private:
+    void createOperandsButtons(QGridLayout *placeHere);
+    void createOperationsButtons(QGridLayout *placeHere);
+
     QLineEdit *displayLine;
 
     QSignalMapper *operandsButtons;   /// 0-9, ~ (+/-), . (decimal point)
     QSignalMapper *operationsButtons; /// +, -, *, ^, /, =
-    QPushButton *cancelButton;        /// C
-    QPushButton *cancelOperandButton; /// CE
+    UberButton *cancelButton;         /// C
+    UberButton *cancelOperandButton;  /// CE
 };
