@@ -51,6 +51,7 @@ template <class T>
 StretchableStack<T>::StackBlock::~StackBlock()
 {
     delete[] array;
+    delete next;
 }
 
 template <class T>
@@ -62,13 +63,7 @@ StretchableStack<T>::StretchableStack(int capacity) :
 template <class T>
 StretchableStack<T>::~StretchableStack()
 {
-    StackBlock *current = mHeadBlock;
-    while (current != NULL)
-    {
-        StackBlock *tmp = current->next;
-        delete current;
-        current = tmp;
-    }
+    delete mHeadBlock;
 }
 
 template <class T>
