@@ -12,6 +12,7 @@ UberCalculator::UberCalculator(QWidget *parent)
     , cancelOperandButton(new UberButton("CE"))
 
     , parser(new SimpleParser())
+    , machine(new MachineAdapter(parser))
 {
     displayLine->setReadOnly(true);
     displayLine->setAlignment(Qt::AlignRight);
@@ -31,9 +32,10 @@ UberCalculator::UberCalculator(QWidget *parent)
     setWindowTitle(tr("Uber Calculator"));
 
     connect(operandsButtons, SIGNAL(mapped(int)), parser, SLOT(putNumber(int)));
-    connect(parser, SIGNAL(valueChanged(double)), this, SLOT(displayOperand(double)));
+    connect(parser, SIGNAL(valueChanged(QString)), this, SLOT(displayOperand(QString)));
     connect(cancelOperandButton, SIGNAL(clicked()), parser, SLOT(cancel()));
-    connect(operationsButtons, SIGNAL(mapped(QString)), this, SLOT(testDisplay(QString)));
+    connect(operationsButtons, SIGNAL(mapped(QString)), machine, SLOT(putOperation(QString)));
+    connect(machine, SIGNAL(valueChanged(double)), this, SLOT(displayOperand(double)));
 }
 
 void UberCalculator::createOperandsButtons(QGridLayout *placeHere)
@@ -65,14 +67,15 @@ void UberCalculator::createOperationsButtons(QGridLayout *placeHere)
 UberCalculator::~UberCalculator()
 {
     delete parser;
-}
-
-void UberCalculator::testDisplay(QString str)
-{
-    displayLine->setText(str);
+    delete machine;
 }
 
 void UberCalculator::displayOperand(double operand)
 {
     displayLine->setText(QString::number(operand, 'g', 14));
+}
+
+void UberCalculator::displayOperand(QString operand)
+{
+    displayLine->setText(operand);
 }

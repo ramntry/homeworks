@@ -1,6 +1,5 @@
 #include <QtGui/QApplication>
 #include "ubercalculator.h"
-#include "stackmachine/stackmachine.h"
 
 int main(int argc, char *argv[])
 {

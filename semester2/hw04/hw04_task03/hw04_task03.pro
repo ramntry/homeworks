@@ -14,11 +14,13 @@ SOURCES += main.cpp\
         ubercalculator.cpp \
     stackmachine/stackmachine.cpp \
     stackmachine/oper.cpp \
-    simpleparser.cpp
+    simpleparser.cpp \
+    machineadapter.cpp
 
 HEADERS  += ubercalculator.h \
     stackmachine/stackmachine.h \
     stackmachine/stretchablestack.h \
     stackmachine/stack.h \
     stackmachine/oper.h \
-    simpleparser.h
+    simpleparser.h \
+    machineadapter.h

@@ -5,6 +5,7 @@
 #include <QtGui/QLayout>
 #include <QSignalMapper>
 #include "simpleparser.h"
+#include "machineadapter.h"
 
 class UberButton : public QPushButton
 {
@@ -27,8 +28,8 @@ public:
     ~UberCalculator();
 
 public slots:
-    void testDisplay(QString str);
     void displayOperand(double operand);
+    void displayOperand(QString operand);
 
 private:
     void createOperandsButtons(QGridLayout *placeHere);
@@ -42,4 +43,6 @@ private:
     UberButton *cancelOperandButton;  /// CE
 
     SimpleParser *parser;
+    MachineAdapter *machine;
+
 };
