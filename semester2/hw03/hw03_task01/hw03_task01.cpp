@@ -1,7 +1,10 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <ctime>
+#include <cstdlib>
 #include "comparator.h"
+#include "sorter.h"
 
 using namespace std;
 
@@ -25,9 +28,44 @@ void comparatorsTest()
         delete comparators[i];
 }
 
+void bubbleSortTest(double *a)
+{
+    int size = 10;
+    int mod = 10;
+    double eps = 1.0;
+
+    cout << "BubbleSort Test:\nBefore:\t\t";
+    for (int i = 0; i < size; i++)
+        cout << (a[i] = random() % mod + 1.0/mod * (random() % mod)) << "  ";
+    cout << endl;
+
+    BubbleSorter<double> s;
+    s.comparator().setEps(eps);
+    s.sort(a, size);
+
+    cout << "After (eps = " << eps << "):\t";
+    for (int i = 0; i < size; i++)
+        cout << a[i] << "  ";
+    cout << endl;
+}
+
+void sortersTest()
+{
+    srand(time(0));
+    double *a = new double[10];
+
+    bubbleSortTest(a);
+
+    delete[] a;
+}
+
 int main()
 {
+    cout << "Testing of comparators:\n" << endl;
     comparatorsTest();
+
+    cout << "\n\nTesting of sorters:\n" << endl;
+    sortersTest();
 
     return 0;
 }
