@@ -14,11 +14,11 @@ void comparatorsTest()
     cout << "<string>(\"hi\", \"hi\"):\t\t"          << StandartComparator<string>()("hi", "hi") << endl;
     cout << "<const char*>(\"hello\", \"world\"):\t" << StandartComparator<const char*>()("hello", "world") << endl;
 
-    StandartComparator<double> *comparators[3];
+    const int comparatorsLength = 3;
+    StandartComparator<double> *comparators[comparatorsLength];
     comparators[0] = new StandartComparator<double>;
     comparators[2] = new StandartComparator<double>(0.001);
     comparators[1] = new StandartComparator<double>(0.01);
-    const int comparatorsLength = 3;
 
     for (int i = 0; i < comparatorsLength; i++)
         cout << "(" << comparators[i]->eps() << ")"
@@ -32,7 +32,7 @@ void bubbleSortTest(double *a)
 {
     int size = 10;
     int mod = 10;
-    double eps = 1.0;
+    double eps = 9.0;
 
     cout << "BubbleSort Test:\nBefore:\t\t";
     for (int i = 0; i < size; i++)

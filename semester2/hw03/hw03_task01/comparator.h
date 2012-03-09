@@ -1,5 +1,6 @@
 #pragma once
 #include <cstring>
+#include <iostream>
 
 const double standartDoubleEpsilon = 1.0e-14;
 
@@ -45,6 +46,7 @@ public:
 
     int operator ()(double const& a, double const& b)
     {
+        std::cout << epsilon << std::endl;
         double diff = a - b;
         if (diff < -epsilon)
             return -1;
