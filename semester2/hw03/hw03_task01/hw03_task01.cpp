@@ -41,6 +41,8 @@ void bubbleSortTest(double *a)
 
     BubbleSorter<double> s;
     s.comparator().setEps(eps);
+// ERROR: В строке выше поле epsilon компаратора вроде бы меняется, если верить отладчику. Но в строке ниже
+//        оно уже имеет значение по умолчанию. Мне совершенно не ясно, в чем же дело.
     s.sort(a, size);
 
     cout << "After (eps = " << eps << "):\t";

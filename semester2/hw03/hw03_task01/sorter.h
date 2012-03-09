@@ -34,9 +34,11 @@ public:
     {}
 
     void sort(T* data, size_t size)
-    {
+{
         for (int i = size - 1; i > 0; --i)
             for (int j = 0; j < i; j++)
+        // ERROR: Строкой ниже не удается обратиться к методу comparator родительского класса напрямую. Я не могу
+        //        понять, почему это так происходит.
                 if (Sorter<T, C>::comparator()(data[j], data[j + 1]) > 0)
                     swap(data[j], data[j + 1]);
     }
