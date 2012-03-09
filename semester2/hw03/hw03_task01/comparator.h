@@ -36,7 +36,7 @@ public:
 };
 
 template <>
-class StandartComparator<double> :public Comparator<double>
+class StandartComparator<double> : public Comparator<double>
 {
 public:
     StandartComparator<double>(double eps = standartDoubleEpsilon)
