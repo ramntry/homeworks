@@ -53,6 +53,11 @@ public:
         return 0;
     }
 
+    double eps()
+    {
+        return epsilon;
+    }
+
 private:
     double epsilon;
 };
