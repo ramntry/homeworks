@@ -54,14 +54,10 @@ public:
     }
 
     double eps()
-    {
-        return epsilon;
-    }
+    { return epsilon; }
 
     void setEps(double newEps)
-    {
-        epsilon = newEps;
-    }
+    { epsilon = newEps; }
 
 private:
     double epsilon;
