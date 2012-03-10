@@ -32,23 +32,27 @@ void bubbleSortTest(double *a)
 {
     int size = 10;
     int mod = 10;
-    double eps = 9.0;
+    double eps = 2.0;
 
     cout << "BubbleSort Test:\nBefore:\t\t";
     for (int i = 0; i < size; i++)
         cout << (a[i] = random() % mod + 1.0/mod * (random() % mod)) << "  ";
     cout << endl;
 
-    BubbleSorter<double> s;
-    s.comparator().setEps(eps);
-// ERROR: В строке выше поле epsilon компаратора вроде бы меняется, если верить отладчику. Но в строке ниже
-//        оно уже имеет значение по умолчанию. Мне совершенно не ясно, в чем же дело.
-    s.sort(a, size);
+    Sorter<double> *sorter = new BubbleSorter<double>();
+    sorter->comparator().setEps(eps);
+// ERROR [FIXED]: "В строке выше поле epsilon компаратора вроде бы меняется, если верить отладчику. Но в строке ниже
+//        оно уже имеет значение по умолчанию. Мне совершенно не ясно, в чем же дело."
+// SOLUTION: Нужно было возвращать компаратор из метода по ссылке, а не значению - копирующий конструктор, имея
+//           значение epsilon по умолчанию, переписывал его.
+    sorter->sort(a, size);
 
-    cout << "After (eps = " << eps << "):\t";
+    cout << "After (eps = " << sorter->comparator().eps() << "):\t";
     for (int i = 0; i < size; i++)
         cout << a[i] << "  ";
     cout << endl;
+
+    delete sorter;
 }
 
 void sortersTest()

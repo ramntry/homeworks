@@ -18,9 +18,9 @@ public:
     {}
     ~Sorter() { delete mComparator; }
     virtual void sort(T* data, size_t size) = 0;
-    C comparator() { return *mComparator; }
+    C &comparator() { return *mComparator; }
 
-private:
+protected:
     C *mComparator;
 };
 
@@ -34,12 +34,18 @@ public:
     {}
 
     void sort(T* data, size_t size)
-{
+    {
         for (int i = size - 1; i > 0; --i)
             for (int j = 0; j < i; j++)
-        // ERROR: Строкой ниже не удается обратиться к методу comparator родительского класса напрямую. Я не могу
-        //        понять, почему это так происходит.
-                if (Sorter<T, C>::comparator()(data[j], data[j + 1]) > 0)
+        // ERROR:     В строке [1] я не могу обратиться к защищенному полю родительского класса - его, несмотря на
+        //        наследование, просто нет в текущей области видимости.
+        //            В строке [2], очевидно, сохраняется та же проблема, но сообщение о ней перекрывается другой
+        //        ошибкой - не удается вывод шаблона. Совершенно непонятно, почему.
+        //            В строках [3] и [4] - рабочие и равнозначные варианты
+        //        if ((*mComparator)(data[j], data[j + 1]) > 0)               // [1]
+        //        if (comparator()(data[j], data[j + 1]) > 0)                 // [2]
+                if (Sorter<T, C>::comparator()(data[j], data[j + 1]) > 0)   // [3]
+        //        if ((*Sorter<T, C>::mComparator)(data[j], data[j + 1]) > 0) // [4]
                     swap(data[j], data[j + 1]);
     }
 };
