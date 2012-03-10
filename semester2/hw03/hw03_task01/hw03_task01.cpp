@@ -46,6 +46,7 @@ void bubbleSortTest(double *a, int size)
 {
     int mod = 10;
     double eps = 2.0;
+    double eps2 = 1.0;
 
     fillArray(a, size, mod);
     cout << "BubbleSort Test[1]:\nBefore:\t\t";
@@ -53,7 +54,6 @@ void bubbleSortTest(double *a, int size)
 
     Sorter<double> *sorter = new BubbleSorter<double>();
     sorter->sort(a, size);
-
     cout << "After (eps = " << sorter->comparator().eps() << "):\t";
     printArray(a, size);
 
@@ -63,8 +63,12 @@ void bubbleSortTest(double *a, int size)
 
     sorter->comparator().setEps(eps);
     sorter->sort(a, size);
-
     cout << "After (eps = " << sorter->comparator().eps() << "):\t";
+    printArray(a, size);
+
+    StandartComparator<double> comparator2(eps2);
+    sorter->sort(a, size, &comparator2);
+    cout << "After (eps = " << comparator2.eps() << "):\t";
     printArray(a, size);
 
     delete sorter;
