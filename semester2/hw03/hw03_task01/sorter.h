@@ -2,7 +2,7 @@
 #include "comparator.h"
 
 template <typename E>
-void swap(E &a, E &b)
+inline void swap(E &a, E &b)
 {
     E c(a);
     a = b;
@@ -26,3 +26,14 @@ protected:
     virtual void _sort(T* data, size_t size, Comparator<T> &comp) = 0;
     C *mComparator;
 };
+
+#define SORTER_METHOD(ClassName) \
+template <typename T, typename C = StandartComparator<T> >              \
+class ClassName : public Sorter<T, C>                                   \
+{                                                                       \
+public:                                                                 \
+    void _sort(T* data, size_t size, Comparator<T> &comp);              \
+};                                                                      \
+                                                                        \
+template <typename T, typename C>                                       \
+void ClassName<T, C>::_sort(T* data, size_t size, Comparator<T> &comp)
