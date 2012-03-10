@@ -82,10 +82,10 @@ void sortersTest()
 
 int main()
 {
-    cout << "Testing of comparators:\n" << endl;
+    cout << "\t\t\tTesting of comparators:\n" << endl;
     comparatorsTest();
 
-    cout << "\n\nTesting of sorters:\n" << endl;
+    cout << "\n\n\t\t\tTesting of sorters:\n" << endl;
     sortersTest();
 
     return 0;
