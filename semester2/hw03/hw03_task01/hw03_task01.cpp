@@ -4,7 +4,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "comparator.h"
-#include "sorter.h"
+#include "BubbleSorter.h"
 
 using namespace std;
 
@@ -28,39 +28,54 @@ void comparatorsTest()
         delete comparators[i];
 }
 
-void bubbleSortTest(double *a)
+void fillArray(double *a, int size, int mod)
 {
-    int size = 10;
-    int mod = 10;
-    double eps = 2.0;
-
-    cout << "BubbleSort Test:\nBefore:\t\t";
+    srand(time(0));
     for (int i = 0; i < size; i++)
-        cout << (a[i] = random() % mod + 1.0/mod * (random() % mod)) << "  ";
-    cout << endl;
+        a[i] = random() % mod + 1.0/mod * (random() % mod);
+}
 
-    Sorter<double> *sorter = new BubbleSorter<double>();
-    sorter->comparator().setEps(eps);
-// ERROR [FIXED]: "В строке выше поле epsilon компаратора вроде бы меняется, если верить отладчику. Но в строке ниже
-//        оно уже имеет значение по умолчанию. Мне совершенно не ясно, в чем же дело."
-// SOLUTION: Нужно было возвращать компаратор из метода по ссылке, а не значению - копирующий конструктор, имея
-//           значение epsilon по умолчанию, переписывал его.
-    sorter->sort(a, size);
-
-    cout << "After (eps = " << sorter->comparator().eps() << "):\t";
+void printArray(double *a, int size)
+{
     for (int i = 0; i < size; i++)
         cout << a[i] << "  ";
     cout << endl;
+}
+
+void bubbleSortTest(double *a, int size)
+{
+    int mod = 10;
+    double eps = 2.0;
+
+    fillArray(a, size, mod);
+    cout << "BubbleSort Test[1]:\nBefore:\t\t";
+    printArray(a, size);
+
+    Sorter<double> *sorter = new BubbleSorter<double>();
+    sorter->sort(a, size);
+
+    cout << "After (eps = " << sorter->comparator().eps() << "):\t";
+    printArray(a, size);
+
+    fillArray(a, size, mod);
+    cout << "\nBubbleSort Test[2]:\nBefore:\t\t";
+    printArray(a, size);
+
+    sorter->comparator().setEps(eps);
+    sorter->sort(a, size);
+
+    cout << "After (eps = " << sorter->comparator().eps() << "):\t";
+    printArray(a, size);
 
     delete sorter;
 }
 
 void sortersTest()
 {
-    srand(time(0));
-    double *a = new double[10];
+    int size = 10;
+    double *a = new double[size];
 
-    bubbleSortTest(a);
+    bubbleSortTest(a, size);
 
     delete[] a;
 }
