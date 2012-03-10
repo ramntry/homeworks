@@ -4,7 +4,10 @@ HEADERS += \
     BubbleSorter.h \
     HeapSorter.h \
     MergeSorter.h \
-    QuickSorter.h
+    QuickSorter.h \
+    tests.h
 
 SOURCES += \
-    hw03_task01.cpp
+    hw03_task01.cpp \
+    comparator_test.cpp \
+    sorter_test.cpp

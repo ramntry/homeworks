@@ -38,4 +38,3 @@ void eraseMatrix(int **matrix, int size)
         delete[] matrix[i];
     delete[] matrix;
 }
-
