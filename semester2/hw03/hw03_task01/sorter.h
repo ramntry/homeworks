@@ -72,7 +72,7 @@ public:
     Sorter()
         : mComparator(new C())
     {}
-    ~Sorter() { delete mComparator; }
+    virtual ~Sorter() { delete mComparator; }
     C &comparator() { return *mComparator; }
 
     void sort(T* data, size_t size, Comparator<T> *comp = 0)

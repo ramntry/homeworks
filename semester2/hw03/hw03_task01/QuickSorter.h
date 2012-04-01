@@ -5,4 +5,3 @@ SORTER_METHOD(QuickSorter)
 {
 
 }
-

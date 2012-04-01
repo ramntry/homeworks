@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include "comparator.h"
 #include "BubbleSorter.h"
+#include "HeapSorter.h"
 
 using namespace std;
 

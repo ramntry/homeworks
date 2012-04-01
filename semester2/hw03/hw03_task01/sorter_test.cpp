@@ -14,23 +14,24 @@ void printArray(double *a, int size)
     cout << endl;
 }
 
-void bubbleSortTest(double *a, int size)
+template <template <typename T, typename C = StandartComparator<T> > class S>
+void abstractSortTest(const char *Sname, double *a, int size)
 {
     int mod = 10;
     double eps = 2.0;
     double eps2 = 1.0;
 
     fillArray(a, size, mod);
-    cout << "BubbleSort Test[1]:\nBefore:\t\t";
+    cout << Sname << " Test[1]:\nBefore:\t\t";
     printArray(a, size);
 
-    Sorter<double> *sorter = new BubbleSorter<double>();
+    Sorter<double> *sorter = new S<double>();
     sorter->sort(a, size);
     cout << "After (eps = " << sorter->comparator().eps() << "):\t";
     printArray(a, size);
 
     fillArray(a, size, mod);
-    cout << "\nBubbleSort Test[2]:\nBefore:\t\t";
+    cout << "\n" << Sname << " Test[2]:\nBefore:\t\t";
     printArray(a, size);
 
     sorter->comparator().setEps(eps);
@@ -42,8 +43,19 @@ void bubbleSortTest(double *a, int size)
     sorter->sort(a, size, &comparator2);
     cout << "After (eps = " << comparator2.eps() << "):\t";
     printArray(a, size);
+    cout << "\n" << endl;
 
     delete sorter;
+}
+
+void bubbleSortTest(double *a, int size)
+{
+    abstractSortTest<BubbleSorter>("BubbleSorter", a, size);
+}
+
+void heapSortTest(double *a, int size)
+{
+    abstractSortTest<HeapSorter>("HeapSorter", a, size);
 }
 
 void sortersTest()
@@ -52,6 +64,7 @@ void sortersTest()
     double *a = new double[size];
 
     bubbleSortTest(a, size);
+    heapSortTest(a, size);
 
     delete[] a;
 }
