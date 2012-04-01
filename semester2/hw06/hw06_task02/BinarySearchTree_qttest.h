@@ -1,4 +1,6 @@
 #pragma once
+#include <sstream>
+#include <algorithm>
 #include <QtTest/QtTest>
 #include "BinarySearchTree.h"
 
@@ -9,7 +11,7 @@ class BinarySearchTreeTest : public QObject
 private slots:
     void init()
     {
-        bst = new BinarySearchTree();
+        bst = new BinarySearchTree<int>();
     }
 
     void testAddSimple()
@@ -65,13 +67,47 @@ private slots:
         QVERIFY(multipleHas(toHas, sizeof(toHas)/sizeof(int)));
     }
 
+    void testPrint()
+    {
+        int toAdd[] = { 30, 20, 40, 10, 25, 23, 27, 5, 15 };
+        size_t toAddSize = sizeof(toAdd)/sizeof(int);
+
+        multipleAdd(toAdd, toAddSize);
+
+        std::ostringstream treeOut;
+        std::ostringstream trueOut;
+        std::sort(toAdd, toAdd + toAddSize);
+        for (size_t i = 0; i < toAddSize; ++i)
+            trueOut << toAdd[i] << ' ';
+
+        bst->print(treeOut);
+        QCOMPARE(treeOut.str(), trueOut.str());
+    }
+
+    void testPrintReverse()
+    {
+        int toAdd[] = { 30, 20, 40, 10, 25, 23, 27, 5, 15 };
+        size_t toAddSize = sizeof(toAdd)/sizeof(int);
+
+        multipleAdd(toAdd, toAddSize);
+
+        std::ostringstream treeOut;
+        std::ostringstream trueOut;
+        std::sort(toAdd, toAdd + toAddSize, std::greater<int>());
+        for (size_t i = 0; i < toAddSize; ++i)
+            trueOut << toAdd[i] << '\n';
+
+        bst->print(treeOut, '\n', true);
+        QCOMPARE(treeOut.str(), trueOut.str());
+    }
+
     void cleanup()
     {
         delete bst;
     }
 
 private:
-    BinarySearchTree *bst;
+    BinarySearchTree<int> *bst;
 
     void multipleAdd(int const* a, size_t size)
     {

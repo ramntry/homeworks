@@ -3,50 +3,66 @@
 #include <cstdio>
 #include <iostream>
 
-struct TreeNode
-{
-    int value;
-    TreeNode *leftChild;
-    TreeNode *rightChild;
-
-    TreeNode(int newValue):
-        value(newValue),
-        leftChild(NULL),
-        rightChild(NULL)
-    {}
-
-    void printTree();
-    void printTreeReverse();
-    void eraseTree();
-};
-
+template <typename T>
 class BinarySearchTree
 {
+    struct TreeNode
+    {
+        T value;
+        TreeNode *leftChild;
+        TreeNode *rightChild;
+
+        TreeNode(T newValue):
+            value(newValue),
+            leftChild(NULL),
+            rightChild(NULL)
+        {}
+
+        template <typename F> void symmetric(F &functor);
+        template <typename F> void reverse(F &functor);
+        void eraseTree();
+    };
+
+    struct TreePrinter
+    {
+        TreePrinter(std::ostream &_os, char _delim)
+            : os(_os)
+            , delim(_delim)
+        {}
+        void operator ()(T const& value) const
+        {
+            os << value << delim;
+        }
+        std::ostream &os;
+        char delim;
+    };
+
 public:
     BinarySearchTree() : tree(NULL) {}
     ~BinarySearchTree() { if (tree) tree->eraseTree(); }
 
-    void add(int number);
-    bool has(int number) { return (bool) *getJointPoint(number); }
-    void del(int number, TreeNode **start = NULL);
-    void print(bool reverse = false);
+    void add(T item);
+    bool has(T item) { return (bool) *getJoinPoint(item); }
+    void del(T item, TreeNode **start = NULL);
+    void print(std::ostream &os = std::cout, char delim = ' ', bool reverse = false);
 
 private:
     // Метод, возвращающий "точку присоединения" элемента - указатель на поле в памяти, который согласно
     // ... структуре дерева должен содержать указатель на узел дерева с этим элементом в качестве значения.
-    TreeNode **getJointPoint(int number, TreeNode **start = NULL);
+    TreeNode **getJoinPoint(T item, TreeNode **start = NULL);
 
     TreeNode *tree;
 };
 
 /*** Реализация функциональности, не требующей удаления элементов дерева ***/
 
-TreeNode **BinarySearchTree::getJointPoint(int number, TreeNode **start)
+template <typename T>
+typename BinarySearchTree<T>::TreeNode **BinarySearchTree<T>::getJoinPoint(T item, TreeNode **start)
 {
     TreeNode **current = start ? start : &tree;
-    while (*current != NULL && number != (*current)->value)
+    while (*current != NULL && item != (*current)->value)
     {
-        if (number < (*current)->value)
+        if (item < (*current)->value)
             current = &(*current)->leftChild;
         else
             current = &(*current)->rightChild;
@@ -54,38 +70,45 @@ TreeNode **BinarySearchTree::getJointPoint(int number, TreeNode **start)
     return current;
 }
 
-void BinarySearchTree::add(int number)
+
+template <typename T>
+void BinarySearchTree<T>::add(T item)
 {
-    TreeNode **joinPoint = getJointPoint(number);
+    TreeNode **joinPoint = getJoinPoint(item);
     if (!(*joinPoint))  // если указуемое точкой присоединения поле пусто, привяжем к нему новый узел
-        *joinPoint = new TreeNode(number);
+        *joinPoint = new TreeNode(item);
 }
 
 /*** Обходы дерева: симметрический, обратный симметрический, postorder ***/
 
-void TreeNode::printTree()
+template <typename T>
+template <typename F>
+void BinarySearchTree<T>::TreeNode::symmetric(F &functor)
 {
     if (leftChild != NULL)
-        leftChild->printTree();
+        leftChild->symmetric(functor);
 
-    printf("%d ", value);
+    functor(value);
 
     if (rightChild != NULL)
-        rightChild->printTree();
+        rightChild->symmetric(functor);
 }
 
-void TreeNode::printTreeReverse()
+template <typename T>
+template <typename F>
+void BinarySearchTree<T>::TreeNode::reverse(F &functor)
 {
     if (rightChild != NULL)
-        rightChild->printTreeReverse();
+        rightChild->reverse(functor);
 
-    printf("%d ", value);
+    functor(value);
 
     if (leftChild != NULL)
-        leftChild->printTreeReverse();
+        leftChild->reverse(functor);
 }
 
-void TreeNode::eraseTree()
+template <typename T>
+void BinarySearchTree<T>::TreeNode::eraseTree()
 {
     if (leftChild != NULL)
         leftChild->eraseTree();
@@ -96,24 +119,26 @@ void TreeNode::eraseTree()
     delete this;
 }
 
-void BinarySearchTree::print(bool reverse)
+template <typename T>
+void BinarySearchTree<T>::print(std::ostream &os, char delim, bool reverse)
 {
     if (tree == NULL)
         return;
 
-    if (!reverse)
-        tree->printTree();
-    else
-        tree->printTreeReverse();
+    TreePrinter printer(os, delim);
 
-    putchar('\n');
+    if (!reverse)
+        tree->symmetric(printer);
+    else
+        tree->reverse(printer);
 }
 
 /*** удаление элемента из дерева ***/
 
-void BinarySearchTree::del(int number, TreeNode **start)
+template <typename T>
+void BinarySearchTree<T>::del(T item, TreeNode **start)
 {
-    TreeNode **current = getJointPoint(number, start);
+    TreeNode **current = getJoinPoint(item, start);
     if (!*current)
         return;
 
@@ -133,4 +158,3 @@ void BinarySearchTree::del(int number, TreeNode **start)
         *current = tmp;
     }
 }
-
