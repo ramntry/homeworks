@@ -63,4 +63,14 @@ private:
     }
 };
 
-QTEST_APPLESS_MAIN(SetTest)
+int main (int argc, char **argv)
+{
+    BinarySearchTreeTest bstTest;
+    QTest::qExec(&bstTest, argc, argv);
+
+    std::cout << "\n\n" << std::endl;
+
+    SetTest sTest;
+    QTest::qExec(&sTest, argc, argv);
+}
+
