@@ -2,8 +2,9 @@
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
+#include "../../hw03/hw03_task01/comparator.h"
 
-template <typename T>
+template <typename T, typename C = StandartComparator<T> >
 class BinarySearchTree
 {
     struct TreeNode
@@ -39,8 +40,14 @@ class BinarySearchTree
     };
 
 public:
-    BinarySearchTree() : tree(NULL) {}
-    ~BinarySearchTree() { if (tree) tree->eraseTree(); }
+    BinarySearchTree()
+        : tree(NULL)
+    {}
+    ~BinarySearchTree()
+    {
+        if (tree)
+            tree->eraseTree();
+    }
 
     void add(T item);
     bool has(T item) { return (bool) *getJoinPoint(item); }
@@ -53,17 +60,18 @@ protected:
     TreeNode **getJoinPoint(T item, TreeNode **start = NULL);
 
     TreeNode *tree;
+    C comp;
 };
 
 /*** Реализация функциональности, не требующей удаления элементов дерева ***/
 
-template <typename T>
-typename BinarySearchTree<T>::TreeNode **BinarySearchTree<T>::getJoinPoint(T item, TreeNode **start)
+template <typename T, typename C>
+typename BinarySearchTree<T, C>::TreeNode **BinarySearchTree<T, C>::getJoinPoint(T item, TreeNode **start)
 {
     TreeNode **current = start ? start : &tree;
-    while (*current != NULL && item != (*current)->value)
+    while (*current != NULL && comp(item, (*current)->value) != 0)
     {
-        if (item < (*current)->value)
+        if (comp(item, (*current)->value) < 0)
             current = &(*current)->leftChild;
         else
             current = &(*current)->rightChild;
@@ -72,8 +80,8 @@ typename BinarySearchTree<T>::TreeNode **BinarySearchTree<T>::getJoinPoint(T ite
 }
 
 
-template <typename T>
-void BinarySearchTree<T>::add(T item)
+template <typename T, typename C>
+void BinarySearchTree<T, C>::add(T item)
 {
     TreeNode **joinPoint = getJoinPoint(item);
     if (!(*joinPoint))  // если указуемое точкой присоединения поле пусто, привяжем к нему новый узел
@@ -82,9 +90,9 @@ void BinarySearchTree<T>::add(T item)
 
 /*** Обходы дерева: симметрический, обратный симметрический, postorder ***/
 
-template <typename T>
+template <typename T, typename C>
 template <typename F>
-void BinarySearchTree<T>::TreeNode::symmetric(F &functor)
+void BinarySearchTree<T, C>::TreeNode::symmetric(F &functor)
 {
     if (leftChild != NULL)
         leftChild->symmetric(functor);
@@ -95,9 +103,9 @@ void BinarySearchTree<T>::TreeNode::symmetric(F &functor)
         rightChild->symmetric(functor);
 }
 
-template <typename T>
+template <typename T, typename C>
 template <typename F>
-void BinarySearchTree<T>::TreeNode::reverse(F &functor)
+void BinarySearchTree<T, C>::TreeNode::reverse(F &functor)
 {
     if (rightChild != NULL)
         rightChild->reverse(functor);
@@ -108,9 +116,9 @@ void BinarySearchTree<T>::TreeNode::reverse(F &functor)
         leftChild->reverse(functor);
 }
 
-template <typename T>
+template <typename T, typename C>
 template <typename F>
-void BinarySearchTree<T>::TreeNode::preorder(F &functor)
+void BinarySearchTree<T, C>::TreeNode::preorder(F &functor)
 {
     functor(value);
 
@@ -121,8 +129,8 @@ void BinarySearchTree<T>::TreeNode::preorder(F &functor)
         rightChild->symmetric(functor);
 }
 
-template <typename T>
-void BinarySearchTree<T>::TreeNode::eraseTree()
+template <typename T, typename C>
+void BinarySearchTree<T, C>::TreeNode::eraseTree()
 {
     if (leftChild != NULL)
         leftChild->eraseTree();
@@ -133,8 +141,8 @@ void BinarySearchTree<T>::TreeNode::eraseTree()
     delete this;
 }
 
-template <typename T>
-void BinarySearchTree<T>::print(std::ostream &os, char delim, bool reverse)
+template <typename T, typename C>
+void BinarySearchTree<T, C>::print(std::ostream &os, char delim, bool reverse)
 {
     if (tree == NULL)
         return;
@@ -149,8 +157,8 @@ void BinarySearchTree<T>::print(std::ostream &os, char delim, bool reverse)
 
 /*** удаление элемента из дерева ***/
 
-template <typename T>
-void BinarySearchTree<T>::del(T item, TreeNode **start)
+template <typename T, typename C>
+void BinarySearchTree<T, C>::del(T item, TreeNode **start)
 {
     TreeNode **current = getJoinPoint(item, start);
     if (!*current)
