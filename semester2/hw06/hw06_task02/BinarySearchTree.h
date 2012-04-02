@@ -180,3 +180,5 @@ void BinarySearchTree<T, C>::del(T item, TreeNode **start)
         *current = tmp;
     }
 }
+
+void binarySearchTreeTestExec(int argc, char **argv);

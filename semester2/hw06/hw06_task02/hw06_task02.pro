@@ -1,5 +1,7 @@
 SOURCES += \
-    hw06_task02.cpp
+    hw06_task02.cpp \
+    BinarySearchTree_qttest.cpp \
+    Set_qttest.cpp
 
 HEADERS += \
     BinarySearchTree.h \
