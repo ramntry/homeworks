@@ -2,8 +2,8 @@
 #include <sstream>
 #include <string>
 #include <QtTest/QtTest>
-#include "BinarySearchTree_qttest.h"
 #include "Set.h"
+#include "BinarySearchTree_qttest.h"
 
 class SetTest : public QObject
 {
@@ -63,14 +63,13 @@ private:
     }
 };
 
-int main (int argc, char **argv)
+void setTestExec(int argc, char **argv)
 {
     BinarySearchTreeTest bstTest;
     QTest::qExec(&bstTest, argc, argv);
-
     std::cout << "\n\n" << std::endl;
 
     SetTest sTest;
     QTest::qExec(&sTest, argc, argv);
+    std::cout << "\n\n" << std::endl;
 }
-

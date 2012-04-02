@@ -83,3 +83,5 @@ Set<T> Set<T>::setUnion(Set<T> &set) const
 
     return res;
 }
+
+void setTestExec(int argc = 0, char **argv = 0);

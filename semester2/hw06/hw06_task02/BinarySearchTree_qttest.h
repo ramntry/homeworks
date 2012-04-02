@@ -125,5 +125,3 @@ private:
         return ok;
     }
 };
-
-//QTEST_APPLESS_MAIN(BinarySearchTreeTest)

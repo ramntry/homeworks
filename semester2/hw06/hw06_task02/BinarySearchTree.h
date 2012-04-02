@@ -7,6 +7,7 @@ template <typename T>
 class BinarySearchTree
 {
     struct TreeNode
+
     {
         T value;
         TreeNode *leftChild;
@@ -17,7 +18,6 @@ class BinarySearchTree
             leftChild(NULL),
             rightChild(NULL)
         {}
-
         template <typename F> void symmetric(F &functor);
         template <typename F> void reverse(F &functor);
         void eraseTree();
