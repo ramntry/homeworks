@@ -20,6 +20,7 @@ class BinarySearchTree
         {}
         template <typename F> void symmetric(F &functor);
         template <typename F> void reverse(F &functor);
+        template <typename F> void preorder(F &functor);
         void eraseTree();
     };
 
@@ -105,6 +106,19 @@ void BinarySearchTree<T>::TreeNode::reverse(F &functor)
 
     if (leftChild != NULL)
         leftChild->reverse(functor);
+}
+
+template <typename T>
+template <typename F>
+void BinarySearchTree<T>::TreeNode::preorder(F &functor)
+{
+    functor(value);
+
+    if (leftChild != NULL)
+        leftChild->symmetric(functor);
+
+    if (rightChild != NULL)
+        rightChild->symmetric(functor);
 }
 
 template <typename T>

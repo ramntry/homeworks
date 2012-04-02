@@ -65,7 +65,7 @@ Set<T> Set<T>::setIntersection(Set<T> &set) const
     Set<T> res;
 
     FilterInserter<Intersector> inserter(res, Intersector(set));
-    BinarySearchTree<T>::tree->symmetric(inserter);
+    BinarySearchTree<T>::tree->preorder(inserter);
 
     return res;
 }
@@ -76,10 +76,10 @@ Set<T> Set<T>::setUnion(Set<T> &set) const
     Set<T> res;
 
     FilterInserter<Dublicator> dublicator(res, Dublicator());
-    BinarySearchTree<T>::tree->symmetric(dublicator);
+    BinarySearchTree<T>::tree->preorder(dublicator);
 
     FilterInserter<Differentiator> differentiator(res, Differentiator(res));
-    set.tree->symmetric(differentiator);
+    set.tree->preorder(differentiator);
 
     return res;
 }
