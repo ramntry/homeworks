@@ -14,32 +14,32 @@ class Set : public BinarySearchTree<T>
 
     struct Differentiator
     {
-        Differentiator(Set<T> &_arg)
+        Differentiator(BinarySearchTree<T> &_arg)
             : arg(_arg)
         {}
         bool operator ()(T const& item)
         {
             return !arg.has(item);
         }
-        Set<T> &arg;
+        BinarySearchTree<T> &arg;
     };
 
     struct Intersector
     {
-        Intersector(Set<T> &_arg)
+        Intersector(BinarySearchTree<T> &_arg)
             : arg(_arg)
         {}
         bool operator ()(T const& item)
         {
             return arg.has(item);
         }
-        Set<T> &arg;
+        BinarySearchTree<T> &arg;
     };
 
     template <typename F>
     struct FilterInserter
     {
-        FilterInserter(Set<T> &_dst, F _filter)
+        FilterInserter(BinarySearchTree<T> &_dst, F _filter)
             : dst(_dst)
             , filter(_filter)
         {}
@@ -50,17 +50,17 @@ class Set : public BinarySearchTree<T>
                 dst.add(item);
         }
 
-        Set<T> &dst;
+        BinarySearchTree<T> &dst;
         F filter;
     };
 
 public:
-    Set<T> setIntersection(Set<T> &set);
-    Set<T> setUnion(Set<T> &set);
+    Set<T> setIntersection(Set<T> &set) const;
+    Set<T> setUnion(Set<T> &set) const;
 };
 
 template <typename T>
-Set<T> Set<T>::setIntersection(Set<T> &set)
+Set<T> Set<T>::setIntersection(Set<T> &set) const
 {
     Set<T> res;
 
@@ -71,7 +71,7 @@ Set<T> Set<T>::setIntersection(Set<T> &set)
 }
 
 template <typename T>
-Set<T> Set<T>::setUnion(Set<T> &set)
+Set<T> Set<T>::setUnion(Set<T> &set) const
 {
     Set<T> res;
 
