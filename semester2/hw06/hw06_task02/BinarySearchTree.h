@@ -46,7 +46,7 @@ public:
     void del(T item, TreeNode **start = NULL);
     void print(std::ostream &os = std::cout, char delim = ' ', bool reverse = false);
 
-private:
+protected:
     // Метод, возвращающий "точку присоединения" элемента - указатель на поле в памяти, который согласно
     // ... структуре дерева должен содержать указатель на узел дерева с этим элементом в качестве значения.
     TreeNode **getJoinPoint(T item, TreeNode **start = NULL);

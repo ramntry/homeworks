@@ -126,4 +126,4 @@ private:
     }
 };
 
-QTEST_MAIN(BinarySearchTreeTest)
+//QTEST_APPLESS_MAIN(BinarySearchTreeTest)

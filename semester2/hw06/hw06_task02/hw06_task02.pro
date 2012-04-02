@@ -4,7 +4,8 @@ SOURCES += \
 HEADERS += \
     BinarySearchTree.h \
     Set.h \
-    BinarySearchTree_qttest.h
+    BinarySearchTree_qttest.h \
+    Set_qttest.h
 
 CONFIG += \
     qtestlib
