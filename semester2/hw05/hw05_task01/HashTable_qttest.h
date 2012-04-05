@@ -18,6 +18,16 @@ private slots:
         QVERIFY(!t->hasherIsSet());
     }
 
+    void testFindInUnitializedTable()
+    {
+        try
+        {
+            t->find("oooops");
+            QFAIL("HasherIsNotSetException wasn't thrown");
+        }
+        catch (HasherIsNotSetException const& e) {}
+    }
+
     void cleanup()
     {
         delete t;

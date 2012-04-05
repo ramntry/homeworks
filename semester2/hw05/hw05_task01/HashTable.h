@@ -31,6 +31,27 @@ public:
 template <typename T>
 class HashTable
 {
+    struct ChainLink;
+
+    struct ChainLinkBase
+    {
+        ChainLinkBase(ChainLink *_next = 0)
+            : next(_next)
+        {}
+
+        ChainLink *next;
+    };
+
+    struct ChainLink : public ChainLinkBase
+    {
+        ChainLink(ChainLinkBase parent, T const& item)
+            : ChainLinkBase(parent.next)
+            , value(item)
+        { parent.next = this; }
+
+        T value;
+    };
+
 public:
     HashTable();
     ~HashTable();
@@ -51,7 +72,9 @@ public:
 private:
     DummyHasher<T> *mDummyHasher;
     Hasher<T> &mHasher;
-    T *mTable;
+    size_t mCapacity;
+    ChainLinkBase *mTable;
+    int mLastCalculatedHash;
 
     static const int defaultCapacity = 1000;
 };
@@ -60,7 +83,9 @@ template <typename T>
 HashTable<T>::HashTable()
     : mDummyHasher(new DummyHasher<T>)
     , mHasher(*mDummyHasher)
-    , mTable(new T[defaultCapacity])
+    , mCapacity(defaultCapacity)
+    , mTable(new ChainLinkBase[mCapacity])
+    , mLastCalculatedHash(-1)
 {}
 
 template <typename T>
@@ -74,4 +99,27 @@ template <typename T>
 void HashTable<T>::setHasher(Hasher<T> &hasher)
 {
     mHasher = hasher;
+}
+
+template <typename T>
+T & HashTable<T>::find(T const& item)
+{
+    mLastCalculatedHash = mHasher(item);
+    ChainLink *current = mTable[mLastCalculatedHash].next;
+
+    while (current && current->value != item)
+        current = current->next;
+
+    if (current)
+        return current->value;
+    return *(T *)0;
+}
+
+template <typename T>
+void HashTable<T>::add(T const& item)
+{
+    if (!&find(item))
+        return;
+
+    new ChainLink(mTable[mLastCalculatedHash], item);
 }
