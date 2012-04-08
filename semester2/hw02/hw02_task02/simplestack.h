@@ -2,7 +2,7 @@
 #include "stack.h"
 
 template <class T>
-class SimpleStack : public Stack<T>
+class SimpleStack : virtual public Stack<T>
 {
 public:
     SimpleStack(int capacity = stackCapacity);

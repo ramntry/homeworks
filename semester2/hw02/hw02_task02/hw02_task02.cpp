@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include "stretchablestack.h"
 #include "simplestack.h"
@@ -81,3 +82,4 @@ int main()
 
     return 0;
 }
+*/

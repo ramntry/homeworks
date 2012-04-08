@@ -1,5 +1,4 @@
 #pragma once
-
 #include "stretchablestack.h"
 #include "oper.h"
 

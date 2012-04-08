@@ -3,7 +3,7 @@
 #include "stack.h"
 
 template <class T>
-class StretchableStack : public Stack<T>
+class StretchableStack : virtual public Stack<T>
 {
 public:
     StretchableStack(int capacity = defaultStackCapacity);
