@@ -1,4 +1,5 @@
 #pragma once
+/*
 #include <stdexcept>
 #include <iostream>
 #include <string>
@@ -31,25 +32,15 @@ public:
 template <typename T>
 class HashTable
 {
-    struct ChainLink;
-
-    struct ChainLinkBase
+    struct ChainLink
     {
-        ChainLinkBase(ChainLink *_next = 0)
-            : next(_next)
+        ChainLink(T const& _item, ChainLink *_next)
+            : item(_item)
+            , next(_next)
         {}
 
+        T item;
         ChainLink *next;
-    };
-
-    struct ChainLink : public ChainLinkBase
-    {
-        ChainLink(ChainLinkBase parent, T const& item)
-            : ChainLinkBase(parent.next)
-            , value(item)
-        { parent.next = this; }
-
-        T value;
     };
 
 public:
@@ -70,10 +61,12 @@ public:
     void printStat(std::ostream &os = std::cout) const;
 
 private:
+    ChainLink *findLink(T const& item);
+
     DummyHasher<T> *mDummyHasher;
     Hasher<T> &mHasher;
     size_t mCapacity;
-    ChainLinkBase *mTable;
+    ChainLink **mTable;
     int mLastCalculatedHash;
 
     static const int defaultCapacity = 1000;
@@ -84,7 +77,7 @@ HashTable<T>::HashTable()
     : mDummyHasher(new DummyHasher<T>)
     , mHasher(*mDummyHasher)
     , mCapacity(defaultCapacity)
-    , mTable(new ChainLinkBase[mCapacity])
+    , mTable(new ChainLink*[mCapacity])
     , mLastCalculatedHash(-1)
 {}
 
@@ -102,24 +95,41 @@ void HashTable<T>::setHasher(Hasher<T> &hasher)
 }
 
 template <typename T>
-T & HashTable<T>::find(T const& item)
+HashTable::ChainLink *HashTable<T>::findLink(T const& item)
 {
     mLastCalculatedHash = mHasher(item);
-    ChainLink *current = mTable[mLastCalculatedHash].next;
+    ChainLink current = mTable[mLastCalculatedHash];
 
-    while (current && current->value != item)
-        current = current->next;
+    while (current.next && current.next->value != item)
+        current = current.next;
 
-    if (current)
-        return current->value;
+    return current;
+}
+
+template <typename T>
+T &HashTable<T>::find(T const& item)
+{
+    ChainLinkBase *link = findLink(item);
+    if (link->next)
+        return link->next->value;
     return *(T *)0;
 }
 
 template <typename T>
 void HashTable<T>::add(T const& item)
 {
-    if (!&find(item))
+    if (!findLink(item))
         return;
 
     new ChainLink(mTable[mLastCalculatedHash], item);
 }
+
+template <typename T>
+void HashTable<T>::del(T const& item)
+{
+    ChainLink *link = findLink(item);
+    if (!link)
+        return;
+
+}
+*/

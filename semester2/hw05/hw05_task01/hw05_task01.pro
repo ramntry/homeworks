@@ -1,5 +1,7 @@
 HEADERS += \
     HashTable.h \
-    HashTable_qttest.h
+
+SOURCES += \
+    HashTable_qttest.cpp
 
 CONFIG += qtestlib
