@@ -35,7 +35,7 @@ template <class T>
 T SimpleStack<T>::pop()
 {
     if (mSize == 0)
-        throw new StackUnderflowException();
+        throw StackUnderflowException();
 
     return mArray[--mSize];
 }
@@ -44,7 +44,7 @@ template <class T>
 T SimpleStack<T>::look() const
 {
     if (mSize == 0)
-        throw new StackUnderflowException();
+        throw StackUnderflowException();
 
     return mArray[mSize - 1];
 }
@@ -53,7 +53,7 @@ template <class T>
 void SimpleStack<T>::push(T value)
 {
     if (mSize == mCapacity)
-        throw new StackOverflowException();
+        throw StackOverflowException();
 
     mArray[mSize++] = value;
 }

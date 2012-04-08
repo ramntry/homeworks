@@ -33,7 +33,7 @@ private:
     StackBlock *mHeadBlock;
     StackBlock *mCurrentBlock;
 
-    static const int defaultStackCapacity = 32;
+    static const int defaultStackCapacity = 16;
     static const int capacityMultiplier = 2;
 };
 
@@ -72,11 +72,7 @@ void StretchableStack<T>::push(T value)
     if (mCurrentBlock->length == mCurrentBlock->capacity)
     {
         if (mCurrentBlock->next == NULL)
-        {
             mCurrentBlock->next = new StackBlock(mCurrentBlock->capacity * capacityMultiplier, mCurrentBlock);
-            std::cout << "StackBlock of " << mCurrentBlock->capacity << " elements is created" << std::endl;
-        } else
-            std::cout << "StackBlock of " << mCurrentBlock->capacity << " elements is reuse" << std::endl;
 
         mCurrentBlock = mCurrentBlock->next;
     }
@@ -91,7 +87,7 @@ T StretchableStack<T>::pop()
         mCurrentBlock = mCurrentBlock->prev;
 
     if (mCurrentBlock == NULL)
-        throw new StackUnderflowException();
+        throw StackUnderflowException();
 
     return mCurrentBlock->array[--mCurrentBlock->length];
 }
@@ -104,7 +100,7 @@ T StretchableStack<T>::look() const
         top = top->prev;
 
     if (top == NULL)
-        throw new StackUnderflowException();
+        throw StackUnderflowException();
 
     return top->array[top->length - 1];
 }

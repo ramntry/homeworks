@@ -1,4 +1,5 @@
 #include <QtTest/QtTest>
+#include <cstring>
 #include "simplestack.h"
 #include "stretchablestack.h"
 
@@ -57,17 +58,102 @@ private slots:
         QVERIFY(s->isEmpty());
     }
 
+    void testSizeInEmptyStack()
+    {
+        QCOMPARE(s->size(), 0);
+    }
+
+    void testSimplePush()
+    {
+        s->push(100);
+        QCOMPARE(s->size(), 1);
+    }
+
+    void testSimplePop()
+    {
+        s->push(200);
+        QCOMPARE(s->pop(), 200);
+        QVERIFY(s->isEmpty());
+    }
+
+    void testSimpleLook()
+    {
+        s->push(300);
+        QCOMPARE(s->look(), 300);
+        QCOMPARE(s->size(), 1);
+    }
+
+    void testComposite()
+    {
+        for (int i = 0; i < 10; ++i)
+            s->push(i);
+        QCOMPARE(s->look(), 9);
+
+        int acc = 0;
+        for (int i = 0; i < 5; ++i)
+            acc += s->pop();
+        QCOMPARE(acc, 35);
+
+        for (int i = 0; i < 10; ++i)
+            s->push(i * 2);
+        QCOMPARE(s->pop(), 18);
+        QCOMPARE(s->size(), 14);
+    }
+
+    void testBig()
+    {
+        try
+        {
+            for (int i = 0; i < 100000; ++i)
+                s->push(i);
+
+            for (int i = 0; i < 50000; ++i)
+                s->pop();
+
+            for (int i = 0; i < 100000; ++i)
+                s->push(i);
+
+            QCOMPARE(s->size(), 150000);
+        }
+        catch (StackOverflowException const& e)
+        {
+            if (strcmp(s->name(), "SimpleStack"))
+                QFAIL("StackOverflowException in non-SimpleStack");
+        }
+    }
+
+    void testPopFromEmptyStack()
+    {
+        try
+        {
+            s->pop();
+            QFAIL("StackUnderflowException wasn't thrown");
+        }
+        catch (StackUnderflowException const& e) {}
+    }
+
+    void testLookFromEmptyStack()
+    {
+        try
+        {
+            s->look();
+            QFAIL("StackUnderflowException wasn't thrown");
+        }
+        catch (StackUnderflowException const& e) {}
+    }
+
 /***************** </TESTS > *****************/
 
 private:
     TestableStack *s;
 };
 
+
 int main(int argc, char **argv)
 {
-    TestableStack *stacks[] = {
-                                new TestingStack<SimpleStack<ItemType> >("SimpleStack"),
-                                new TestingStack<StretchableStack<ItemType> >("StretchableStack")
+    TestableStack *stacks[] =
+                              { new TestingStack<SimpleStack<ItemType> >("SimpleStack")
+                              , new TestingStack<StretchableStack<ItemType> >("StretchableStack")
                               };
 
     int ret = 0;
