@@ -1,17 +1,11 @@
 HEADERS += \
     list.h \
     linkedlist.h \
-    arraylist.h
+    arraylist.h \
+    list_qttest.h
 
 SOURCES += \
     linkedlist.cpp \
-    hw02_task01.cpp \
     arraylist.cpp
 
-
-
-
-
-
-
-
+CONFIG += qtestlib
