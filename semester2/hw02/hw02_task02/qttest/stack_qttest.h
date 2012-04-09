@@ -1,7 +1,7 @@
+#pragma once
 #include <QtTest/QtTest>
 #include <cstring>
-#include "../stack/simplestack.h"
-#include "../stack/stretchablestack.h"
+#include "../stack/stack.h"
 
 typedef int ItemType;
 

@@ -1,4 +1,6 @@
 #include "stack_qttest.h"
+#include "../stack/simplestack.h"
+#include "../stack/stretchablestack.h"
 
 int stackTestExec(int argc, char **argv)
 {
@@ -19,4 +21,3 @@ int stackTestExec(int argc, char **argv)
     }
     return ret;
 }
-
