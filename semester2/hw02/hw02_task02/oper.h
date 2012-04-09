@@ -11,7 +11,7 @@ struct Oper
 
     Oper();
     Oper(double num);
-    Oper(char op, bool isOper=false);
+    Oper(char op, bool isVar=false);
     Oper(const Oper & src);
     void out();
 };

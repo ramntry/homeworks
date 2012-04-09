@@ -16,3 +16,4 @@ SOURCES += \
 
 CONFIG += qtestlib
 
+QMAKE_LFLAGS += -z muldefs

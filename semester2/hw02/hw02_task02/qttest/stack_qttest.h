@@ -1,7 +1,7 @@
 #include <QtTest/QtTest>
 #include <cstring>
-#include "stack/simplestack.h"
-#include "stack/stretchablestack.h"
+#include "../stack/simplestack.h"
+#include "../stack/stretchablestack.h"
 
 typedef int ItemType;
 

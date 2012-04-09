@@ -14,11 +14,11 @@ Oper::Oper(double num) :
     isOperand(true)
 {}
 
-Oper::Oper(char op, bool isOper) :
+Oper::Oper(char op, bool isVar) :
     operation(op),
-    isOperand(isOper)
+    isOperand(isVar)
 {                       // проверено: NAN с любым первым байтом
-    if (isOper)         // тоже NAN, что позволяет хранить в Oper
+    if (isVar)          // тоже NAN, что позволяет хранить в Oper
     {                   // односимвольные операнды-переменные:
         operand = NAN;  // isOperand тогда true, но operand == NAN,
         operation = op; // то за полезной информацией путь в operation
