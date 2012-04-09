@@ -1,5 +1,5 @@
 #pragma once
-#include "stretchablestack.h"
+#include "stack/stretchablestack.h"
 #include "oper.h"
 
 class StackMachine
@@ -22,3 +22,4 @@ class StackMachine
         double checkOperand(Oper op);
 };
 
+int stackMachineTestExec(int argc, char **argv);

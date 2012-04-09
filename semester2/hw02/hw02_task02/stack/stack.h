@@ -17,3 +17,5 @@ public:
 
 class StackUnderflowException {};
 class StackOverflowException {};
+
+int stackTestExec(int argc, char **argv);

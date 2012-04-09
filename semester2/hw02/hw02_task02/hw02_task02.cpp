@@ -83,3 +83,11 @@ int main()
     return 0;
 }
 */
+
+#include "stackmachine.h"
+
+int main(int argc, char **argv)
+{
+    return stackMachineTestExec(argc, argv);
+}
+
