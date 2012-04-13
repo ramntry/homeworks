@@ -32,7 +32,7 @@ public:
                                         "setHasher before using the table"); }
     };
 
-    HashTable();
+    HashTable(size_t capacity = defaultCapacity);
 
     ~HashTable()
     { delete[] mTable; }
@@ -43,7 +43,9 @@ public:
     bool hasherIsSet() const
     { return mHasher != &mDummyHasher; }
 
-    void add(T const& item);
+    void add(T const& item)
+    { mTable[(*mHasher)(item)].insert(0, item); }
+
     void del(T const& item);
     T const& find(T const& item) const;
     void printStat(std::ostream &os = std::cout) const;
@@ -52,14 +54,9 @@ private:
     static const int defaultCapacity = 1000;
     static DummyHasher mDummyHasher;
 
-    void hashIt(T const& item) const
-    { mLastCalculatedHash = (*mHasher)(item) % mCapacity; }
-
-    mutable int mLastCalculatedHash;
     Hasher *mHasher;
     size_t mCapacity;
     LinkedList<T> *mTable;
-
 };
 
 template <typename T>
@@ -67,38 +64,30 @@ typename HashTable<T>::DummyHasher HashTable<T>::mDummyHasher = HashTable<T>::Du
 
 
 template <typename T>
-HashTable<T>::HashTable()
-    : mLastCalculatedHash(-1)
-    , mHasher(&mDummyHasher)
-    , mCapacity(defaultCapacity)
+HashTable<T>::HashTable(size_t capacity)
+    : mHasher(&mDummyHasher)
+    , mCapacity(capacity)
     , mTable(new LinkedList<T>[mCapacity])
 {}
 
 template <typename T>
 T const& HashTable<T>::find(T const& item) const
 {
-    hashIt(item);
-    int index = mTable[mLastCalculatedHash].find(item);
+    int hash = (*mHasher)(item);
+    int index = mTable[hash].find(item);
 
     if (index == mTable->itemNotFound)
         return *(T *)0;
-    return mTable[mLastCalculatedHash].at(index);
-}
-
-template <typename T>
-void HashTable<T>::add(T const& item)
-{
-    hashIt(item);
-    mTable[mLastCalculatedHash].insert(0, item);
+    return mTable[hash].at(index);
 }
 
 template <typename T>
 void HashTable<T>::del(T const& item)
 {
-    hashIt(item);
-    int index = mTable[mLastCalculatedHash].find(item);
+    int hash = (*mHasher)(item);
+    int index = mTable[hash].find(item);
 
-    mTable[mLastCalculatedHash].remove(index);
+    mTable[hash].remove(index);
 }
 
 template <typename T>
