@@ -18,9 +18,13 @@ class HashTableTest : public QObject
     Q_OBJECT
 
 private slots:
-    void init()
+    void initTestCase()
     {
         hasher = new QStringHasher;
+    }
+
+    void init()
+    {
         t = new HashTable<QString>;
         t->setHasher(hasher);
     }
@@ -56,12 +60,6 @@ private slots:
         QVERIFY(&t->find("la-la") == 0);
     }
 
-    void cleanup()
-    {
-        delete t;
-        delete hasher;
-    }
-
     void testDel()
     {
         t->add("la-la-la");
@@ -91,6 +89,16 @@ private slots:
                               "number of conflicts: 1\n"
                               "max size of chain: 2\n";
         QCOMPARE(out.str(), trueOut);
+    }
+
+    void cleanup()
+    {
+        delete t;
+    }
+
+    void cleanupTestCase()
+    {
+        delete hasher;
     }
 
 private:
