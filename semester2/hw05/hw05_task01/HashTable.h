@@ -1,8 +1,8 @@
 #pragma once
-/*
 #include <stdexcept>
 #include <iostream>
 #include <string>
+#include "../../hw02/hw02_task01/List/LinkedList.h"
 
 class HasherIsNotSetException : public std::runtime_error
 {
@@ -13,123 +13,122 @@ public:
 };
 
 template <typename T>
-class Hasher
-{
-public:
-    ~Hasher() {}
-    virtual int operator ()(T const& item) throw (HasherIsNotSetException) = 0;
-};
-
-template <typename T>
-class DummyHasher : public Hasher<T>
-{
-public:
-    int operator ()(T const& item) throw (HasherIsNotSetException)
-    { throw HasherIsNotSetException("Set a hash-functor using the method "
-                                    "setHasher before using the table"); }
-};
-
-template <typename T>
 class HashTable
 {
-    struct ChainLink
-    {
-        ChainLink(T const& _item, ChainLink *_next)
-            : item(_item)
-            , next(_next)
-        {}
+public:
 
-        T item;
-        ChainLink *next;
+    class Hasher
+    {
+    public:
+        virtual ~Hasher() {}
+        virtual int operator ()(T const& item) = 0;
     };
 
-public:
-    HashTable();
-    ~HashTable();
+    class DummyHasher : public Hasher
+    {
+    public:
+        int operator ()(T const& item)
+        { throw HasherIsNotSetException("Set a hash-functor using the method "
+                                        "setHasher before using the table"); }
+    };
 
-    void setHasher(Hasher<T> &hasher);
+    HashTable();
+
+    ~HashTable()
+    { delete[] mTable; }
+
+    void setHasher(Hasher *hasher)
+    { mHasher = hasher; }
 
     bool hasherIsSet() const
-    { return &mHasher != mDummyHasher; }
+    { return mHasher != &mDummyHasher; }
 
     void add(T const& item);
     void del(T const& item);
-
-    T & find(T const& item);
     T const& find(T const& item) const;
-
     void printStat(std::ostream &os = std::cout) const;
 
 private:
-    ChainLink *findLink(T const& item);
-
-    DummyHasher<T> *mDummyHasher;
-    Hasher<T> &mHasher;
-    size_t mCapacity;
-    ChainLink **mTable;
-    int mLastCalculatedHash;
-
     static const int defaultCapacity = 1000;
+    static DummyHasher mDummyHasher;
+
+    void hashIt(T const& item) const
+    { mLastCalculatedHash = (*mHasher)(item) % mCapacity; }
+
+    mutable int mLastCalculatedHash;
+    Hasher *mHasher;
+    size_t mCapacity;
+    LinkedList<T> *mTable;
+
 };
 
 template <typename T>
+typename HashTable<T>::DummyHasher HashTable<T>::mDummyHasher = HashTable<T>::DummyHasher();
+
+
+template <typename T>
 HashTable<T>::HashTable()
-    : mDummyHasher(new DummyHasher<T>)
-    , mHasher(*mDummyHasher)
+    : mLastCalculatedHash(-1)
+    , mHasher(&mDummyHasher)
     , mCapacity(defaultCapacity)
-    , mTable(new ChainLink*[mCapacity])
-    , mLastCalculatedHash(-1)
+    , mTable(new LinkedList<T>[mCapacity])
 {}
 
 template <typename T>
-HashTable<T>::~HashTable()
+T const& HashTable<T>::find(T const& item) const
 {
-    delete mDummyHasher;
-    delete[] mTable;
-}
+    hashIt(item);
+    int index = mTable[mLastCalculatedHash].find(item);
 
-template <typename T>
-void HashTable<T>::setHasher(Hasher<T> &hasher)
-{
-    mHasher = hasher;
-}
-
-template <typename T>
-HashTable::ChainLink *HashTable<T>::findLink(T const& item)
-{
-    mLastCalculatedHash = mHasher(item);
-    ChainLink current = mTable[mLastCalculatedHash];
-
-    while (current.next && current.next->value != item)
-        current = current.next;
-
-    return current;
-}
-
-template <typename T>
-T &HashTable<T>::find(T const& item)
-{
-    ChainLinkBase *link = findLink(item);
-    if (link->next)
-        return link->next->value;
-    return *(T *)0;
+    if (index == mTable->itemNotFound)
+        return *(T *)0;
+    return mTable[mLastCalculatedHash].at(index);
 }
 
 template <typename T>
 void HashTable<T>::add(T const& item)
 {
-    if (!findLink(item))
-        return;
-
-    new ChainLink(mTable[mLastCalculatedHash], item);
+    hashIt(item);
+    mTable[mLastCalculatedHash].insert(0, item);
 }
 
 template <typename T>
 void HashTable<T>::del(T const& item)
 {
-    ChainLink *link = findLink(item);
-    if (!link)
-        return;
+    hashIt(item);
+    int index = mTable[mLastCalculatedHash].find(item);
 
+    mTable[mLastCalculatedHash].remove(index);
 }
-*/
+
+template <typename T>
+void HashTable<T>::printStat(std::ostream &os) const
+{
+    int maxSizeOfChain = 0;
+    int itemCounter = 0;
+    int conflictCounter = 0;
+    int busyCounter = 0;
+    for (size_t i = 0; i < mCapacity; ++i)
+    {
+        int currSize = mTable[i].length();
+        itemCounter += currSize;
+
+        if (currSize > 0)
+            busyCounter++;
+
+        if (currSize > 1)
+            conflictCounter++;
+
+        if (currSize > maxSizeOfChain)
+            maxSizeOfChain = currSize;
+    }
+
+    os << "number of items: " << itemCounter << std::endl;
+    os << "load factor: " << (double)busyCounter / mCapacity << std::endl;
+    os << "number of cells: " << mCapacity << std::endl;
+    os << "number of busy cells: " << busyCounter << std::endl;
+    os << "number of conflicts: " << conflictCounter << std::endl;
+    os << "max size of chain: " << maxSizeOfChain << std::endl;
+}
+
+int hashTableTestExec(int argc, char **argv);
