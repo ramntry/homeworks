@@ -3,15 +3,7 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 #include "HashTable.h"
-
-class QStringHasher : public HashTable<QString>::Hasher
-{
-public:
-    int operator ()(QString const& item)
-    {
-        return item[0].toLatin1();
-    }
-};
+#include "QStringHashers.h"
 
 class HashTableTest : public QObject
 {
@@ -20,12 +12,12 @@ class HashTableTest : public QObject
 private slots:
     void initTestCase()
     {
-        hasher = new QStringHasher;
+        hasher = new QStringHasherFirstChar;
     }
 
     void init()
     {
-        t = new HashTable<QString>;
+        t = new HashTable<QString>(8);
         t->setHasher(hasher);
     }
 
@@ -60,16 +52,27 @@ private slots:
         QVERIFY(&t->find("la-la") == 0);
     }
 
+    void testAddSameItem()
+    {
+        t->add("zzz");
+        t->add("zzz");
+
+        QCOMPARE(t->size(), (size_t) 1);
+    }
+
     void testDel()
     {
         t->add("la-la-la");
         t->add("boom-boom");
         t->add("la-la-lam");
 
-        t->del("la-la-la");
+        QVERIFY(t->del("la-la-la"));
+        QCOMPARE(t->size(), (size_t) 2);
 
         QVERIFY(&t->find("la-la-la") == 0);
         QCOMPARE(t->find("la-la-lam"), QString("la-la-lam"));
+
+        QVERIFY(!t->del("la-la-la"));
     }
 
     void testPrintStat()
@@ -83,12 +86,67 @@ private slots:
         t->printStat(out);
 
         std::string trueOut = "number of items: 4\n"
-                              "load factor: 0.003\n"
-                              "number of cells: 1000\n"
-                              "number of busy cells: 3\n"
-                              "number of conflicts: 1\n"
-                              "max size of chain: 2\n";
+                              "load factor: 0.5\n"
+                              "number of cells: 8\n"
+                              "number of busy cells: 2\n"
+                              "number of conflicts: 2\n"
+                              "max size of chain: 3\n";
         QCOMPARE(out.str(), trueOut);
+    }
+
+    void testSetNewHasher()
+    {
+        t->add("la-la-la");
+        t->add("boom-boom");
+        t->add("tra-ta-ta");
+        t->add("la-la-lam");
+
+        HashTable<QString>::Hasher *h = new QStringHasherTwoChars;
+        t->setHasher(h);
+
+        t->del("boom-boom");
+
+        QVERIFY(&t->find("la-la-la"));
+        QVERIFY(&t->find("la-la-lam"));
+        QVERIFY(&t->find("tra-ta-ta"));
+        QVERIFY(!&t->find("boom-boom"));
+
+        delete h;
+    }
+
+    void testBig()
+    {
+        QString pattern = "abracadabra";
+        for (int i = 0; i < 20; ++i)
+        {
+            QString tmp = pattern;
+            tmp[0] = tmp[0].toAscii() + i;
+            for (int j = 0; j < 20; ++j)
+            {
+                t->add(tmp);
+                tmp[1] = tmp[1].toAscii() + 1;
+            }
+        }
+
+        HashTable<QString>::Hasher *h = new QStringHasherTwoChars;
+        t->setHasher(h);
+
+        for (int i = 0; i < 20; ++i)
+        {
+            QString tmp = pattern;
+            tmp[0] = tmp[0].toAscii() + i;
+            for (int j = 0; j < 20; ++j)
+            {
+                QVERIFY(&t->find(tmp));
+                t->del(tmp);
+                QVERIFY(!&t->find(tmp));
+
+                tmp[1] = tmp[1].toAscii() + 1;
+            }
+        }
+        QCOMPARE(t->size(), (size_t) 0);
+
+        delete h;
     }
 
     void cleanup()
@@ -109,5 +167,8 @@ private:
 int hashTableTestExec(int argc, char **argv)
 {
     HashTableTest htt;
-    return QTest::qExec(&htt, argc, argv);
+    int ret = QTest::qExec(&htt, argc, argv);
+
+    std::cout << "\n\n" << std::endl;
+    return ret;
 }

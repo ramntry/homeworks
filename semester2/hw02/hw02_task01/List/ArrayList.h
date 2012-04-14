@@ -8,21 +8,21 @@ public:
     ArrayList(int initCapacity = defaultArrayListCapacity);
     ~ArrayList();
 
-    void insert(int position, T item);
-    void remove(int position);
-    T & at(int position);
+    void insert(size_t position, T item);
+    void remove(size_t position);
+    T & at(size_t position);
 
     int find(T item) const;
-    int length() const { return mLength; }
+    size_t length() const { return mLength; }
 
 private:
     void checkCapacity();
 
-    static const int defaultArrayListCapacity = 256;
+    static const int defaultArrayListCapacity = 2;
     static const int capacityMultiplier = 2;
 
-    int mLength;
-    int mCapacity;
+    size_t mLength;
+    size_t mCapacity;
     T *mArray;
 };
 
@@ -48,7 +48,7 @@ void ArrayList<T>::checkCapacity()
     mCapacity *= capacityMultiplier;
     T *tmp = new T[mCapacity];
 
-    for (int i = 0; i < mLength; i++)
+    for (size_t i = 0; i < mLength; i++)
     {
         tmp[i] = mArray[i];
     }
@@ -58,14 +58,14 @@ void ArrayList<T>::checkCapacity()
 }
 
 template <typename T>
-void ArrayList<T>::insert(int position, T item)
+void ArrayList<T>::insert(size_t position, T item)
 {
     if (position > mLength)
         throw ListOutOfBoundsException();
 
     checkCapacity();
 
-    for (int i = mLength; i > position; i--)
+    for (size_t i = mLength; i > position; i--)
     {
         mArray[i] = mArray[i - 1];
     }
@@ -75,12 +75,12 @@ void ArrayList<T>::insert(int position, T item)
 }
 
 template <typename T>
-void ArrayList<T>::remove(int position)
+void ArrayList<T>::remove(size_t position)
 {
     if (position >= mLength)
         throw ListOutOfBoundsException();
 
-    for (int i = position; i < mLength - 1; i++)
+    for (size_t i = position; i < mLength - 1; i++)
     {
         mArray[i] = mArray[i + 1];
     }
@@ -88,7 +88,7 @@ void ArrayList<T>::remove(int position)
 }
 
 template <typename T>
-T & ArrayList<T>::at(int position)
+T & ArrayList<T>::at(size_t position)
 {
     if (position >= mLength)
         throw ListOutOfBoundsException();
@@ -98,10 +98,10 @@ T & ArrayList<T>::at(int position)
 template <typename T>
 int ArrayList<T>::find(T item) const
 {
-    for (int i = 0; i < mLength; i++)
+    for (size_t i = 0; i < mLength; i++)
     {
         if (mArray[i] == item)
             return i;
     }
-    return itemNotFound;
+    return List<T>::itemNotFound;
 }

@@ -1,6 +1,7 @@
 HEADERS += \
     HashTable.h \
-    HashTable_qttest.h
+    HashTable_qttest.h \
+    QStringHashers.h
 
 CONFIG += qtestlib
 

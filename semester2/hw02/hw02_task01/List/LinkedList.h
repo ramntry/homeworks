@@ -9,12 +9,12 @@ public:
     LinkedList();
     ~LinkedList();
 
-    void insert(int position, T item);
-    void remove(int position);
-    T & at(int position);
+    void insert(size_t position, T item);
+    void remove(size_t position);
+    T & at(size_t position);
 
     int find(T item) const;
-    int length() const { return mLength; }
+    size_t length() const { return mLength; }
 
 private:
     class LinkedListNode
@@ -28,9 +28,9 @@ private:
     };
 
     LinkedListNode *mHead;
-    int mLength;
+    size_t mLength;
 
-    LinkedListNode *getNode(int position);
+    LinkedListNode *getNode(size_t position);
 };
 
 template <typename T>
@@ -45,10 +45,10 @@ LinkedList<T>::LinkedListNode::LinkedListNode(T value, LinkedListNode *next) :
 {}
 
 template <typename T>
-typename LinkedList<T>::LinkedListNode *LinkedList<T>::getNode(int position)
+typename LinkedList<T>::LinkedListNode *LinkedList<T>::getNode(size_t position)
 {
     LinkedListNode *current = mHead;
-    for (int i = 0; i < position; i++)
+    for (size_t i = 0; i < position; i++)
     {
         current = current->mNext;
     }
@@ -74,7 +74,7 @@ LinkedList<T>::~LinkedList()
 }
 
 template <typename T>
-void LinkedList<T>::insert(int position, T item)
+void LinkedList<T>::insert(size_t position, T item)
 {
     if (position > mLength)
         throw ListOutOfBoundsException();
@@ -87,7 +87,7 @@ void LinkedList<T>::insert(int position, T item)
 }
 
 template <typename T>
-void LinkedList<T>::remove(int position)
+void LinkedList<T>::remove(size_t position)
 {
     if (position >= mLength)
         throw ListOutOfBoundsException();
@@ -101,7 +101,7 @@ void LinkedList<T>::remove(int position)
 }
 
 template <typename T>
-T & LinkedList<T>::at(int position)
+T & LinkedList<T>::at(size_t position)
 {
     if (position >= mLength)
         throw ListOutOfBoundsException();
