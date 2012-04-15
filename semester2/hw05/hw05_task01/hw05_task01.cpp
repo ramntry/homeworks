@@ -36,6 +36,8 @@ QStrHash::Hasher *chooseHasher()
         return new QStringHasherTwoChars;
     case 2:
         return new QStringHasher;
+    default:
+        return 0;
     };
 }
 
