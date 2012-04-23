@@ -14,3 +14,4 @@ using namespace std;
 
 void comparatorsTest();
 void sortersTest();
+void pthreadTest();

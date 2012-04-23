@@ -10,4 +10,5 @@ HEADERS += \
 SOURCES += \
     hw03_task01.cpp \
     comparator_test.cpp \
-    sorter_test.cpp
+    sorter_test.cpp \
+    pthread_test/pthread_test.cpp

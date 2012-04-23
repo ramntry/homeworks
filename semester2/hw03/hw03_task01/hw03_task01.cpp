@@ -11,5 +11,8 @@ int main()
     cout << "\n\n\t\t\tTesting of sorters:\n" << endl;
     sortersTest();
 
+    cout << "\n\n\t\t\tTesting of pthread:\n" << endl;
+    pthreadTest();
+
     return 0;
 }
