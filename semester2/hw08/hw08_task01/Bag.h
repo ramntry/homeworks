@@ -68,7 +68,7 @@ class Bag::AbstractIterator
 {
 public:
     AbstractIterator(size_t size)
-        : stack(4.5 * log(size), 1.5)
+        : stack(std::min(size, (size_t)(4.5 * log(size + 1))), 1.5)
         , cursor(NULL)
     {}
 
@@ -76,10 +76,14 @@ public:
     { return cursor->key; }
 
     virtual void next() = 0;
+    virtual bool hasNext() = 0;
 
 protected:
     DynamicStack<TreapNode *> stack;
     TreapNode *cursor;
+
+friend
+    bool operator ==(Iterator const& l, Iterator const& r);
 };
 
 class Bag::Iterator
@@ -98,6 +102,9 @@ public:
     void operator ++()
     { d->next(); }
 
+    bool operator !=(Iterator const& with)
+    { return !(*this == with); }
+
 protected:
     Iterator(Bag::AbstractIterator *impl)
         : d(impl)
@@ -107,7 +114,14 @@ protected:
 
 friend
     bool operator ==(Iterator const& l, Iterator const& r)
-    { return l.d == r.d; }
+    {
+        if (r.d == NULL)
+            return l.d == NULL || !l.d->hasNext();
+        if (l.d == NULL)
+            return r.d == NULL || !r.d->hasNext();
+
+        return l.d->cursor == r.d->cursor;
+    }
 
 friend class Bag;
 };
@@ -117,6 +131,7 @@ class Bag::TraversalIterator : public Bag::AbstractIterator
 public:
     TraversalIterator(size_t size, TreapNode *root)
         : AbstractIterator(size)
+        , counter(size)
     {
         cursor = root;
         while (cursor->leftChild)
@@ -128,11 +143,17 @@ public:
 
     void next()
     {
+        if (--counter == 0)
+            return;
+
         if (cursor->rightChild != NULL)
             down();
         else
             up();
     }
+
+    bool hasNext()
+    { return counter > 0; }
 
 protected:
     void up()
@@ -151,6 +172,8 @@ protected:
             cursor = cursor->leftChild;
         }
     }
+
+    int counter;
 };
 
 class Bag::FindIterator : public Bag::AbstractIterator
@@ -164,6 +187,9 @@ Bag::Iterator Bag::end()
 
 Bag::Iterator Bag::begin()
 {
+    if (mSize == 0)
+        return Iterator();
+
     return Iterator(new TraversalIterator(mSize, mRoot));
 }
 

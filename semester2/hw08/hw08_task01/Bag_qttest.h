@@ -143,18 +143,32 @@ private slots:
         QCOMPARE(*it, 2);
     }
 
+    void traversalIteratorEmptyAndOneElementBag()
+    {
+        Bag::Iterator it = mtreap->begin();
+        QCOMPARE(it, mtreap->end());
+
+        mtreap->add(42);
+        Bag::Iterator it2 = mtreap->begin();
+        QVERIFY(it2 != mtreap->end());
+        ++it2;
+        QVERIFY(it2 == mtreap->end());
+    }
+
     void traversalIteratorFullTest()
     {
-        for (int i = 0; i < 10; ++i)
+        std::ostringstream trueOut;
+        for (int i = 0; i < 1000; ++i)
         {
             mtreap->add(i);
-            mtreap->add(10 - i);
+            trueOut << i << ' ';
         }
 
-        Bag::Iterator it = mtreap->begin();
-        for (int i = 0; i < 19; ++i, ++it)
-            std::cout << *it << ' ';
-        std::cout << *it << std::endl;
+        std::ostringstream out;
+        for (Bag::Iterator it = mtreap->begin(); it != mtreap->end(); ++it)
+            out << *it << ' ';
+
+        QCOMPARE(out.str(), trueOut.str());
     }
 
     void cleanup()
