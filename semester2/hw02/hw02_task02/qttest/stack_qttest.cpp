@@ -1,12 +1,14 @@
 #include "stack_qttest.h"
 #include "../stack/simplestack.h"
 #include "../stack/stretchablestack.h"
+#include "../stack/dynamicstack.h"
 
 int stackTestExec(int argc, char **argv)
 {
     TestableStack *stacks[] =
                               { new TestingStack<SimpleStack<ItemType> >("SimpleStack")
                               , new TestingStack<StretchableStack<ItemType> >("StretchableStack")
+                              , new TestingStack<DynamicStack<ItemType> >("DynamicStack")
                               };
 
     int ret = 0;

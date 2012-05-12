@@ -5,7 +5,8 @@ HEADERS += \
     stackmachine.h \
     oper.h \
     qttest/stack_qttest.h \
-    qttest/stackmachine_qttest.h
+    qttest/stackmachine_qttest.h \
+    stack/dynamicstack.h
 
 SOURCES += \
     hw02_task02.cpp \

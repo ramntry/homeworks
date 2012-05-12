@@ -15,7 +15,7 @@ public:
     bool isEmpty() const { return mSize == 0; }
     int size() const { return mSize; }
 
-private:
+protected:
     int mCapacity;
     int mSize;
     T *mArray;
