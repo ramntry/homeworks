@@ -129,6 +129,34 @@ private slots:
         QCOMPARE(out.str(), std::string("Bag( 0 1 1 2 2 3 3 4 )"));
     }
 
+    void endIteratorsEqualityTest()
+    {
+        QVERIFY(mtreap->end() == mtreap->end());
+    }
+
+    void traversalIteratorInitTest()
+    {
+        for (int i = 4; i < 10; ++i)
+            mtreap->add(i / 2);
+
+        Bag::Iterator it = mtreap->begin();
+        QCOMPARE(*it, 2);
+    }
+
+    void traversalIteratorFullTest()
+    {
+        for (int i = 0; i < 10; ++i)
+        {
+            mtreap->add(i);
+            mtreap->add(10 - i);
+        }
+
+        Bag::Iterator it = mtreap->begin();
+        for (int i = 0; i < 19; ++i, ++it)
+            std::cout << *it << ' ';
+        std::cout << *it << std::endl;
+    }
+
     void cleanup()
     {
         delete mtreap;

@@ -10,3 +10,4 @@ SOURCES += \
     Bag.cpp
 
 QMAKE_CXXFLAGS += --std=c++0x
+QMAKE_LFLAGS += -z muldefs
