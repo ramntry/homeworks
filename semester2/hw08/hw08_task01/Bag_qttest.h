@@ -96,6 +96,8 @@ private slots:
             }
             QVERIFY(!mtreap->has(i));
         }
+
+        QCOMPARE(mtreap->size(), (size_t) 0);
     }
 
     void eraseTest()
@@ -110,6 +112,8 @@ private slots:
             mtreap->erase(i);
             QVERIFY(!mtreap->has(i));
         }
+
+        QCOMPARE(mtreap->size(), (size_t) 0);
     }
 
     void outToStreamTest()

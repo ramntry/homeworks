@@ -97,15 +97,12 @@ void Bag::erase(int value)
 {
     Parts nonStrict = split(mRoot, value);
     Parts strict = split(nonStrict.first, value, true);
-    TreapNode *cursor = strict.second;
 
-    while (cursor != NULL)
+    traversal(strict.second, [&mSize](TreapNode *node)
     {
-        TreapNode *toDel = cursor;
-        cursor = cursor->leftChild;
-        delete toDel;
+        delete node;
         mSize--;
-    }
+    });
 
     mRoot = merge(strict.first, nonStrict.second);
 }
