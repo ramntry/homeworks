@@ -47,8 +47,13 @@ private slots:
         Vector<int, 5> v4;
         v4[4] = 200;
 
-        Vector<int, 5> tmp = v->add(v2).add(v3.scalarMul(2));
+        Vector<int, 5> tmp = v->add(v2).add(v3.mul(2));
         QVERIFY(v->isEqual(tmp.sub(v4)));
+
+        int a5[5] = { 1, 2, 3, 4, 5 };
+        int a6[5] = { 0, 1, 0, 0, 2 };
+        Vector<int, 5> v6(a6, a6 + 5);
+        QCOMPARE(v6.scalarMul(Vector<int, 5>(a5, a5 + 5)), 12);
     }
 
     void scalarAndNullTest()

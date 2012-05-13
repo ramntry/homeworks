@@ -19,7 +19,8 @@ public:
 
     Vector<N, dim> add(Vector<N, dim> const& term) const;
     Vector<N, dim> sub(Vector<N, dim> const& term) const;
-    Vector<N, dim> scalarMul(N scalar) const;
+    Vector<N, dim> mul(N scalar) const;
+    N scalarMul(Vector<N, dim> const& term) const;
 
     bool isNull() const;
     bool isScalar() const;
@@ -74,13 +75,23 @@ Vector<N, dim> Vector<N, dim>::sub(Vector<N, dim> const& term) const
 }
 
 template <typename N, size_t dim>
-Vector<N, dim> Vector<N, dim>::scalarMul(N scalar) const
+Vector<N, dim> Vector<N, dim>::mul(N scalar) const
 {
     Vector<N, dim> tmp(*this);
     for (size_t i = 0; i < dim; ++i)
         tmp.mArray[i] *= scalar;
 
     return tmp;
+}
+
+template <typename N, size_t dim>
+N Vector<N, dim>::scalarMul(Vector<N, dim> const& term) const
+{
+    N acc = 0;
+    for (size_t i = 0; i < dim; ++i)
+        acc += mArray[i] * term.mArray[i];
+
+    return acc;
 }
 
 template <typename N, size_t dim>
