@@ -6,23 +6,6 @@
 
 using namespace std;
 
-struct IgnoreCaseStringComparator
-{
-    int operator ()(string const& a, string const& b)
-    {
-        size_t commonSize = min(a.size(), b.size());
-        size_t i = 0;
-        while (i < commonSize && tolower(a[i]) == tolower(b[i]))
-            ++i;
-
-        if (i == commonSize)
-            return comp(a.size(), b.size());
-        return comp(tolower(a[i]), tolower(b[i]));
-    }
-
-    StandartComparator<int> comp;
-};
-
 typedef Set<string, IgnoreCaseStringComparator> SetIgnCaseStr;
 
 int main(int argc, char **argv)

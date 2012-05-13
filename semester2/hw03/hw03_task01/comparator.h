@@ -1,5 +1,6 @@
 #pragma once
 #include <cstring>
+#include <string>
 
 const double standartDoubleEpsilon = 1.0e-14;
 
@@ -61,4 +62,23 @@ public:
 
 private:
     double epsilon;
+};
+
+class IgnoreCaseStringComparator
+{
+public:
+    int operator ()(std::string const& a, std::string const& b)
+    {
+        size_t commonSize = std::min(a.size(), b.size());
+        size_t i = 0;
+        while (i < commonSize && tolower(a[i]) == tolower(b[i]))
+            ++i;
+
+        if (i == commonSize)
+            return comp(a.size(), b.size());
+        return comp(tolower(a[i]), tolower(b[i]));
+    }
+
+protected:
+    StandartComparator<int> comp;
 };

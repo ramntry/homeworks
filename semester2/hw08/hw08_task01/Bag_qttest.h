@@ -16,7 +16,7 @@ private slots:
 
     void init()
     {
-        mtreap = new Bag;
+        mtreap = new Bag<int>;
     }
 
     void sizeAndHasInEmptyTreapSimpleTest()
@@ -139,17 +139,17 @@ private slots:
         for (int i = 4; i < 10; ++i)
             mtreap->add(i / 2);
 
-        Bag::Iterator it = mtreap->begin();
+        Bag<int>::Iterator it = mtreap->begin();
         QCOMPARE(*it, 2);
     }
 
     void traversalIteratorEmptyAndOneElementBag()
     {
-        Bag::Iterator it = mtreap->begin();
-        QCOMPARE(it, mtreap->end());
+        Bag<int>::Iterator it = mtreap->begin();
+        QVERIFY(it == mtreap->end());
 
         mtreap->add(42);
-        Bag::Iterator it2 = mtreap->begin();
+        Bag<int>::Iterator it2 = mtreap->begin();
         QVERIFY(it2 != mtreap->end());
         ++it2;
         QVERIFY(it2 == mtreap->end());
@@ -165,10 +165,67 @@ private slots:
         }
 
         std::ostringstream out;
-        for (Bag::Iterator it = mtreap->begin(); it != mtreap->end(); ++it)
+        for (Bag<int>::Iterator it = mtreap->begin(); it != mtreap->end(); ++it)
             out << *it << ' ';
 
         QCOMPARE(out.str(), trueOut.str());
+    }
+
+    void findIteratorTest1()
+    {
+        Bag<int>::Iterator res = mtreap->find(42);
+        QVERIFY(res == Bag<int>::end());
+
+        for (int i = 0; i < 40; ++i)
+        {
+            mtreap->add(i);
+            mtreap->add(90 - i);
+        }
+        Bag<int>::Iterator res2 = mtreap->find(42);
+        QVERIFY(res2 == Bag<int>::end());
+
+        mtreap->add(42);
+        Bag<int>::Iterator res3 = mtreap->find(42);
+        QVERIFY(res3 != Bag<int>::end());
+
+        int c = 0;
+        for (; res3 != mtreap->end(); ++res3, ++c)
+            QCOMPARE(*res3, 42);
+        QCOMPARE(c, 1);
+    }
+
+    void findIteratorTest2()
+    {
+        for (int i = 0; i < 30; ++i)
+            for (int j = 0; j < 500; ++j)
+                mtreap->add(j);
+
+        for (int j = 0; j < 500; ++j)
+        {
+            Bag<int>::Iterator it = mtreap->find(j);
+
+            int c = 0;
+            for (; it != mtreap->end(); ++it, ++c)
+                QCOMPARE(*it, j);
+
+            QCOMPARE(c, 30);
+        }
+    }
+
+    void compareIteratorsSimpleTest()
+    {
+        for (int i = 0; i < 100; ++i)
+            mtreap->add(i / 2);
+
+        Bag<int>::Iterator fst = mtreap->begin();
+        Bag<int>::Iterator snd = mtreap->begin();
+        for (int i = 0; i < 50; ++i)
+        {
+            ++fst;
+            ++snd;
+        }
+
+        QVERIFY(fst == snd);
     }
 
     void cleanup()
@@ -177,5 +234,5 @@ private slots:
     }
 
 private:
-    Bag *mtreap;
+    Bag<int> *mtreap;
 };
