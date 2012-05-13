@@ -18,7 +18,7 @@ private slots:
     {
         mtreap = new Bag<int>;
     }
-
+/*
     void sizeAndHasInEmptyTreapSimpleTest()
     {
         QCOMPARE(mtreap->size(), (size_t) 0);
@@ -226,6 +226,60 @@ private slots:
         }
 
         QVERIFY(fst == snd);
+    }
+
+    void buildFromSortedCollectionTest()
+    {
+        std::string str;
+        Bag<char> empty(str.begin(), str.end());
+        QVERIFY(empty.begin() == empty.end());
+
+        for (size_t i = 0; i < 100; ++i)
+            for (size_t j = 0; j < 100; ++j)
+                mtreap->add(j);
+
+        Bag<int> bag(mtreap->begin(), mtreap->end());
+        QCOMPARE(bag.size(), mtreap->size());
+
+        Bag<int>::Iterator src = mtreap->begin();
+        Bag<int>::Iterator dst = bag.begin();
+        Bag<int>::Iterator end;
+        for (; src != end; ++src, ++dst)
+            QCOMPARE(*src, *dst);
+    }
+*/
+    void unionTest()
+    {
+        Bag<int> empty1;
+        Bag<int> empty2;
+        Bag<int> empty3 = empty1.setUnion(empty2);
+
+        Bag<int> tmp;
+        for (int i = 0; i < 10; ++i)
+        {
+            tmp.add(i/3 * 2);
+            mtreap->add(i/3 * 3);
+        }
+
+        Bag<int> snd = tmp.setUnion(empty3);
+        std::cout << tmp << std::endl;
+        std::cout << snd << std::endl;
+        std::cout << *mtreap << std::endl;
+        Bag<int> aggregation = mtreap->setUnion(snd);
+        std::cout << aggregation << std::endl;
+
+        for (size_t i = 20, j = 0; i > 0; i -= 2, ++j)
+        {
+            std::cout << j/3 * 2 << ' ';
+            std::cout << j/3 * 3 << ' ';
+            aggregation.remove(j/3 * 2);
+            std::cout << aggregation << std::endl;
+//            QCOMPARE(aggregation.size(), i - 1);
+            aggregation.remove(j/3 * 3);
+            std::cout << aggregation << std::endl;
+//            QCOMPARE(aggregation.size(), i - 2);
+        }
+        QCOMPARE(aggregation.size(), (size_t) 0);
     }
 
     void cleanup()

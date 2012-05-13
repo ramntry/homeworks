@@ -25,12 +25,18 @@ public:
     Bag();
     ~Bag();
 
+    template <typename I1, typename I2>
+    Bag(I1 beginIt, I2 endIt);
+
     void add(T const& value);       /** Добавление элемента в множество */
     void remove(T const& value);    /** Удаление одного экземпляра, равного данному, если такой есть */
     void erase(T const& value);     /** Удаление всех экземпляров, равных данному */
 
     bool has(T const& value)        /** Проверка существования во множестве хотя бы одного экземпляра, равного данному */
     { return search(mRoot, value) != NULL; }
+
+    Bag<T, Cmp> setIntersection(Bag<T, Cmp> const& snd);
+    Bag<T, Cmp> setUnion(Bag<T, Cmp> &snd);
 
     size_t size()                   /** Текущее число неуникальных элементов во множестве */
     { return mSize; }
@@ -104,6 +110,33 @@ template <typename T, typename Cmp>
 Cmp Bag<T, Cmp>::cmp = *(new(&Bag<T, Cmp>::cmp) Cmp);  /// PROBLEM
 
 //////////////////////////////////////   Bag   //////////////////////////////////////
+
+template <typename T, typename Cmp>
+template <typename I1, typename I2>
+Bag<T, Cmp>::Bag(I1 it, I2 endIt)
+    : mRoot(NULL)
+    , mSize(0)
+{
+    DynamicStack<TreapNode *> stack;
+
+    for (; it != endIt; ++it)
+    {
+        TreapNode *tmp = new TreapNode(*it);
+        TreapNode *last = NULL;
+        while (!stack.isEmpty() &&
+                stack.look()->priority < tmp->priority)
+            last = stack.pop();
+
+        tmp->leftChild = last;
+        if (!stack.isEmpty())
+            stack.look()->rightChild = tmp;
+        else
+            mRoot = tmp;
+
+        stack.push(tmp);
+        mSize++;
+    }
+}
 
 template <typename T, typename Cmp>
 Bag<T, Cmp>::Bag()
@@ -466,6 +499,53 @@ typename Bag<T, Cmp>::Iterator Bag<T, Cmp>::find(const T &value)
     return Iterator(new FindIterator(search(mRoot, value)));
 }
 
+// Теоретико-множественые операции
+
+template <typename T, typename Cmp>
+Bag<T, Cmp> Bag<T, Cmp>::setIntersection(Bag<T, Cmp> const& snd)
+{
+}
+
+template <typename T, typename Cmp>
+Bag<T, Cmp> Bag<T, Cmp>::setUnion(Bag<T, Cmp> &snd)
+{
+    struct Aggregator
+    {
+        Aggregator(Bag<T, Cmp> &_a, Bag<T, Cmp> &_b)
+            : a(_a.begin())
+            , b(_b.begin())
+            , size_a(_a.size())
+            , size_b(_b.size())
+        {}
+
+        T operator *() // объединенние потоков в духе merge sort
+        {
+            if (size_b <= 0 || (size_a > 0 && cmp(*a, *b) <= 0))
+            {
+                T res(*a);
+                ++a;
+                --size_a;
+                return res;
+            }
+            T res(*b);
+            ++b;
+            --size_b;
+            return res;
+        }
+        void operator ++() {}
+
+        bool operator !=(Aggregator &)
+        { return size_a > 0 || size_b > 0; }
+
+        Bag<T, Cmp>::Iterator a;
+        Bag<T, Cmp>::Iterator b;
+        size_t size_a;
+        size_t size_b;
+    };
+
+    Aggregator it(*this, snd);
+    return Bag<T, Cmp>(it, it);
+}
 
 /////////////////////////////////////   Tests   /////////////////////////////////////
 
