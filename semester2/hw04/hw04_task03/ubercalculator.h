@@ -3,16 +3,15 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QLineEdit>
 #include <QtGui/QLayout>
-#include <QSignalMapper>
-#include "simpleparser.h"
-#include "machineadapter.h"
+#include <QtCore/QSignalMapper>
+#include "stackmachine/stackmachine.h"
 
 class UberButton : public QPushButton
 {
     Q_OBJECT
 
 public:
-    UberButton(QString label = "", QWidget *parent = 0)
+    UberButton(QString label, QWidget *parent = 0)
         : QPushButton(label, parent)
     {
         setMinimumSize(50, 40);
@@ -25,13 +24,12 @@ class UberCalculator : public QWidget
     
 public:
     UberCalculator(QWidget *parent = 0);
-    ~UberCalculator();
 
 public slots:
-    void displayOperand(double operand);
-    void displayOperand(QString operand);
+    void addText(QString const& text);
+    void execute();
 
-private:
+protected:
     void createOperandsButtons(QGridLayout *placeHere);
     void createOperationsButtons(QGridLayout *placeHere);
 
@@ -40,9 +38,5 @@ private:
     QSignalMapper *operandsButtons;   /// 0-9, ~ (+/-), . (decimal point)
     QSignalMapper *operationsButtons; /// +, -, *, ^, /, =
     UberButton *cancelButton;         /// C
-    UberButton *cancelOperandButton;  /// CE
-
-    SimpleParser *parser;
-    MachineAdapter *machine;
-
+    UberButton *executeButton;        /// exe
 };

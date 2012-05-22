@@ -49,8 +49,8 @@ void StackMachine::put(char operation)
         noError = false;   // операции
     else
     {
-        Oper leftOp = stack.pop();
-        engine(operation, leftOp, stack.pop());
+        Oper rightOp = stack.pop();
+        engine(operation, stack.pop(), rightOp);
     }
 }
 

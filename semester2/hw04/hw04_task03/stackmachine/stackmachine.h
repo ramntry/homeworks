@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stretchablestack.h"
+#include "polishmachine/polishmachine.h"
 #include "oper.h"
 
 class StackMachine
