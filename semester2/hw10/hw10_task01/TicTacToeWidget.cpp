@@ -29,7 +29,7 @@ TicTacToeWidget::TicTacToeWidget(QWidget *parent)
 // Обработчик нажатия одной из кнопок поля
 void TicTacToeWidget::step(int cell)
 {   // Выполнить ход и установить метку нажатой кнопки в верное значение
-    QPushButton* activeButton = dynamic_cast<QPushButton*>(buttonsMapper->mapping(cell));
+    QPushButton* activeButton = qobject_cast<QPushButton*>(buttonsMapper->mapping(cell));
     if (engine->step(cell) == TicTacToe::X)
         activeButton->setText("X");
     else
@@ -56,5 +56,5 @@ void TicTacToeWidget::reset()
 {
     engine->reset();
     for (int i = 0; i < fieldSize * fieldSize; ++i)
-        dynamic_cast<QPushButton*>(buttonsMapper->mapping(i))->setText("");
+        qobject_cast<QPushButton*>(buttonsMapper->mapping(i))->setText("");
 }
