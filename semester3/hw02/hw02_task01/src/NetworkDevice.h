@@ -5,7 +5,6 @@
 
 class Network;
 class Program;
-class Data;
 
 class NetworkDeviceWrapper;
 
@@ -19,8 +18,8 @@ public:
     Network *network();
 
 protected:
-    virtual void assumeNetworkMessage(Program *program) = 0;
-    virtual void assumeNetworkMessage(Data *data) = 0;
+    virtual void assumeNetworkMessage(Program &program) = 0;
+
     void unlinkFromNetwork();
 
 private:
@@ -51,8 +50,7 @@ public:
     NeighborsIterator neighborsBegin();
     NeighborsIterator neighborsEnd();
 
-    void assumeNetworkMessage(Program *program);
-    void assumeNetworkMessage(Data *data);
+    void assumeNetworkMessage(Program &program);
 
 private:
     NetworkDevice *mWrapped;

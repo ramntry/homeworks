@@ -11,7 +11,7 @@ public:
     void addDevice(NetworkDevice *newDevice);
     void removeDevice(NetworkDevice *device);
     bool hasAddress(NetworkAddress address);
-    void sendMessageTo(Program *program, NetworkAddress receiver);
+    void sendMessageTo(Program &program, NetworkAddress receiver);
     NeighborsRange neighbors(NetworkAddress address);
     void link(NetworkAddress fst, NetworkAddress snd);
 

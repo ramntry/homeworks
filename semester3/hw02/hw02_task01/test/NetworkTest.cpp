@@ -70,7 +70,7 @@ TEST_F(NetworkTest, SendToComputerSimpleProgramTest)
     };
     SimpleProgram program;
 
-    mNetwork->sendMessageTo(&program, computer.address());
+    mNetwork->sendMessageTo(program, computer.address());
     EXPECT_EQ(1, program.mRunCounter);
 }
 

@@ -1,12 +1,8 @@
 #include "PersonalComputer.h"
 #include "Program.h"
 
-void PersonalComputer::assumeNetworkMessage(Program *program)
+void PersonalComputer::assumeNetworkMessage(Program &program)
 {
-    program->run(this);
-}
-
-void PersonalComputer::assumeNetworkMessage(Data *)
-{
+    program.run(this);
 }
 

@@ -1,10 +1,14 @@
 #pragma once
+#include <memory>
+#include <vector>
+#include "Program.h"
 #include "NetworkDevice.h"
 
 class PersonalComputer : public NetworkDevice
 {
 private:
-    virtual void assumeNetworkMessage(Program *program);
-    virtual void assumeNetworkMessage(Data *data);
+    typedef std::vector<Program> ProgramContainer;
+
+    virtual void assumeNetworkMessage(Program &program);
 };
 

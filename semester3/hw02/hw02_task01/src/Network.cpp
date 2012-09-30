@@ -33,7 +33,7 @@ NetworkAddress Network::getFreeAddress()
     return mCurrentFreeAddress++;
 }
 
-void Network::sendMessageTo(Program *program, NetworkAddress receiver)
+void Network::sendMessageTo(Program &program, NetworkAddress receiver)
 {
     mAddressMap[receiver]->assumeNetworkMessage(program);
 }
