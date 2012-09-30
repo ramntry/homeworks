@@ -10,6 +10,7 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 LIBS += -L../../../libs/gtest/build -lgtest
 INCLUDEPATH += ../../../libs/gtest/include
+INCLUDEPATH += ../../../libs/boost
 
 HEADERS += \
     test/test.h \

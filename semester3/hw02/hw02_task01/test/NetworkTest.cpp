@@ -2,8 +2,8 @@
 #include <memory>
 #include <algorithm>
 #include "NetworkTest.h"
+#include "../src/Virus.h"
 #include "../src/PersonalComputer.h"
-#include "../src/Program.h"
 
 void NetworkTest::SetUp()
 {
@@ -172,5 +172,45 @@ TEST_F(NetworkTest, LinkThreePCsInCircleAndRemoveByForceOneOfThemTest)
         EXPECT_EQ(numOfPCsAfterRemoveOneOfThem - 1, nbs.second - nbs.first);
         EXPECT_NE(nbs.second, std::find(nbs.first, nbs.second, pcs[(i + 1) % numOfPCsAfterRemoveOneOfThem]->address()));
     }
+}
+
+TEST_F(NetworkTest, LinkFourPCsInCircleSpreadVirusAndRemoveByForceThreePCsTest)
+{
+    int const numOfPCs = 4;
+
+    typedef std::shared_ptr<PersonalComputer> PCPtr;
+    typedef std::vector<PCPtr> PCs;
+
+    PCs pcs;
+    pcs.push_back(PCPtr(new PersonalComputer));
+
+    mNetwork->addDevice(pcs[0].get());
+    for (int i = 1; i < numOfPCs; ++i)
+    {
+        pcs.push_back(PCPtr(new PersonalComputer));
+        mNetwork->addDevice(pcs[i].get());
+        mNetwork->link(pcs[i - 1]->address(), pcs[i]->address());
+    }
+    mNetwork->link(pcs[numOfPCs - 1]->address(), pcs[0]->address());
+
+    Virus *virus = new Virus;
+
+    mNetwork->sendMessageTo(Program::Pointer(virus), pcs.back()->address());
+    EXPECT_EQ(1, virus->numOfCopies());
+
+    pcs.back()->runAllPrograms();
+    EXPECT_EQ(3, virus->numOfCopies());
+
+    pcs.erase(pcs.begin());
+    EXPECT_EQ(2, virus->numOfCopies());
+
+    pcs.erase(--pcs.end());
+    EXPECT_EQ(1, virus->numOfCopies());
+
+    pcs.back()->runAllPrograms();
+    EXPECT_EQ(2, virus->numOfCopies());
+
+    pcs.erase(pcs.begin());
+    EXPECT_EQ(1, virus->numOfCopies());
 }
 

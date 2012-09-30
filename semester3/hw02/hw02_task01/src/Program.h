@@ -1,12 +1,12 @@
 #pragma once
-#include <memory>
+#include <boost/enable_shared_from_this.hpp>
 
 class PersonalComputer;
 
-class Program
+class Program : public boost::enable_shared_from_this<Program>
 {
 public:
-    typedef std::shared_ptr<Program> Pointer;
+    typedef boost::shared_ptr<Program> Pointer;
 
     virtual void run(PersonalComputer *computer) = 0;
 };

@@ -7,6 +7,8 @@
 class PersonalComputer : public NetworkDevice
 {
 public:
+    virtual ~PersonalComputer() {}
+
     void runAllPrograms();
 
 private:
