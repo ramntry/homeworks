@@ -214,3 +214,24 @@ TEST_F(NetworkTest, LinkFourPCsInCircleSpreadVirusAndRemoveByForceThreePCsTest)
     EXPECT_EQ(1, virus->numOfCopies());
 }
 
+TEST_F(NetworkTest, LinkThreePCWithDifferentOSsSequentiallyAndSpreadVirusTest)
+{
+    PersonalComputer root;
+    PersonalComputer windows;
+    PersonalComputer linux(Linux);
+
+    mNetwork->addDevice(&root);
+    mNetwork->addDevice(&windows);
+    mNetwork->addDevice(&linux);
+
+    mNetwork->link(root.address(), windows.address());
+    mNetwork->link(root.address(), linux.address());
+
+    Virus *virus = new Virus;
+    mNetwork->sendMessageTo(Program::Pointer(virus), root.address());
+    EXPECT_EQ(1, virus->numOfCopies());
+
+    root.runAllPrograms();
+    EXPECT_EQ(2, virus->numOfCopies());
+}
+

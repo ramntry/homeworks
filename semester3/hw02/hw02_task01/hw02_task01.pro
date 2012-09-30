@@ -19,6 +19,7 @@ HEADERS += \
     src/Network.h \
     src/NetworkAddress.h \
     src/NetworkDevice.h \
+    src/OS.h \
     src/PersonalComputer.h \
     src/Program.h \
     src/Virus.h \
@@ -30,6 +31,7 @@ SOURCES += \
     src/Network.cpp \
     src/NetworkDevice.cpp \
     src/PersonalComputer.cpp \
+    src/Program.cpp \
     src/Virus.cpp \
     main.cpp \
 

@@ -3,6 +3,11 @@
 #include "PersonalComputer.h"
 #include "Virus.h"
 
+Virus::Virus(OS os)
+    : Program(os)
+{
+}
+
 void Virus::run(PersonalComputer *computer)
 {
     Network *nw = computer->network();

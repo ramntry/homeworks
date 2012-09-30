@@ -3,15 +3,18 @@
 #include <vector>
 #include <string>
 #include "Program.h"
+#include "OS.h"
 #include "NetworkDevice.h"
 
 class PersonalComputer : public NetworkDevice
 {
 public:
-    PersonalComputer(std::string const &name = std::string());
+    PersonalComputer(std::string const &name = std::string(), OS os = Windows);
+    PersonalComputer(OS os);
     virtual ~PersonalComputer() {}
 
     std::string name();
+    OS os();
     void runAllPrograms();
 
 private:
@@ -21,6 +24,7 @@ private:
     virtual void assumeNetworkMessage(Program::Pointer program);
 
     std::string mName;
+    OS mOS;
     ProgramContainer mPrograms;
 };
 

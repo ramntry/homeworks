@@ -1,8 +1,13 @@
 #include "PersonalComputer.h"
-#include "Program.h"
 
-PersonalComputer::PersonalComputer(std::string const &name)
+PersonalComputer::PersonalComputer(std::string const &name, OS os)
     : mName(name)
+    , mOS(os)
+{
+}
+
+PersonalComputer::PersonalComputer(OS os)
+    : mOS(os)
 {
 }
 
@@ -11,9 +16,17 @@ std::string PersonalComputer::name()
     return mName;
 }
 
+OS PersonalComputer::os()
+{
+    return mOS;
+}
+
 void PersonalComputer::assumeNetworkMessage(Program::Pointer program)
 {
-    mPrograms.push_back(program);
+    if (program->os() == os())
+    {
+        mPrograms.push_back(program);
+    }
 }
 
 void PersonalComputer::runAllPrograms()
