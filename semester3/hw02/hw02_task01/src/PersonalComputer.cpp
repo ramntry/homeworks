@@ -1,6 +1,16 @@
 #include "PersonalComputer.h"
 #include "Program.h"
 
+PersonalComputer::PersonalComputer(std::string const &name)
+    : mName(name)
+{
+}
+
+std::string PersonalComputer::name()
+{
+    return mName;
+}
+
 void PersonalComputer::assumeNetworkMessage(Program::Pointer program)
 {
     mPrograms.push_back(program);
