@@ -6,9 +6,15 @@
 
 class PersonalComputer : public NetworkDevice
 {
-private:
-    typedef std::vector<Program> ProgramContainer;
+public:
+    void runAllPrograms();
 
-    virtual void assumeNetworkMessage(Program &program);
+private:
+    typedef std::vector<Program::Pointer> ProgramContainer;
+    typedef ProgramContainer::iterator ProgramIterator;
+
+    virtual void assumeNetworkMessage(Program::Pointer program);
+
+    ProgramContainer mPrograms;
 };
 

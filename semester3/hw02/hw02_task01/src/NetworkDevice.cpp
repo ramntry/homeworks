@@ -109,7 +109,7 @@ NetworkDeviceWrapper::NeighborsIterator NetworkDeviceWrapper::neighborsEnd()
     return mNeighborsList.end();
 }
 
-void NetworkDeviceWrapper::assumeNetworkMessage(Program &program)
+void NetworkDeviceWrapper::assumeNetworkMessage(Program::Pointer program)
 {
     mWrapped->assumeNetworkMessage(program);
 }

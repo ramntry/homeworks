@@ -1,11 +1,10 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include "Program.h"
 #include "NetworkAddress.h"
 
 class Network;
-class Program;
-
 class NetworkDeviceWrapper;
 
 class NetworkDevice
@@ -18,7 +17,7 @@ public:
     Network *network();
 
 protected:
-    virtual void assumeNetworkMessage(Program &program) = 0;
+    virtual void assumeNetworkMessage(Program::Pointer program) = 0;
 
     void unlinkFromNetwork();
 
@@ -50,7 +49,7 @@ public:
     NeighborsIterator neighborsBegin();
     NeighborsIterator neighborsEnd();
 
-    void assumeNetworkMessage(Program &program);
+    void assumeNetworkMessage(Program::Pointer program);
 
 private:
     NetworkDevice *mWrapped;

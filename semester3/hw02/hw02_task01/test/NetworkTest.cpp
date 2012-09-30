@@ -68,10 +68,12 @@ TEST_F(NetworkTest, SendToComputerSimpleProgramTest)
         virtual void run(PersonalComputer *) { mRunCounter++; }
         int mRunCounter;
     };
-    SimpleProgram program;
+    SimpleProgram *simpleProgram = new SimpleProgram;
 
-    mNetwork->sendMessageTo(program, computer.address());
-    EXPECT_EQ(1, program.mRunCounter);
+    mNetwork->sendMessageTo(Program::Pointer(simpleProgram), computer.address());
+    computer.runAllPrograms();
+
+    EXPECT_EQ(1, simpleProgram->mRunCounter);
 }
 
 TEST_F(NetworkTest, ChangeNetworkByPersonalComputerTest)
