@@ -233,5 +233,14 @@ TEST_F(NetworkTest, LinkThreePCWithDifferentOSsSequentiallyAndSpreadVirusTest)
 
     root.runAllPrograms();
     EXPECT_EQ(2, virus->numOfCopies());
+
+    windows.runAllPrograms();
+    EXPECT_EQ(3, virus->numOfCopies());
+
+    root.runAllPrograms();
+    EXPECT_EQ(5, virus->numOfCopies());
+
+    linux.runAllPrograms();
+    EXPECT_EQ(5, virus->numOfCopies());
 }
 
