@@ -21,9 +21,11 @@ public:
 protected:
     virtual void assumeNetworkMessage(Program *program) = 0;
     virtual void assumeNetworkMessage(Data *data) = 0;
+    void unlinkFromNetwork();
 
 private:
     void setNetworkDeviceWrapper(NetworkDeviceWrapper *wrapper);
+
     NetworkDeviceWrapper *mNetworkDeviceWrapper;
 
 friend class NetworkDeviceWrapper;
@@ -33,8 +35,8 @@ class NetworkDeviceWrapper
 {
 public:
     typedef std::shared_ptr<NetworkDeviceWrapper> Pointer;
-    typedef std::vector<Pointer> AdjacencyList;
-    typedef AdjacencyList::iterator AdjacencyIterator;
+    typedef std::vector<NetworkAddress> NeighborsList;
+    typedef NeighborsList::iterator NeighborsIterator;
 
     NetworkDeviceWrapper(Network *network, NetworkDevice *toWrap);
     static Pointer create(Network *network, NetworkDevice *toWrap);
@@ -44,8 +46,10 @@ public:
     NetworkAddress address();
     Network *network();
 
-    AdjacencyIterator adjacencyBegin();
-    AdjacencyIterator adjacencyEnd();
+    void addLinkWith(NetworkAddress newNeighbor);
+    void removeLinkWith(NetworkAddress neighbor);
+    NeighborsIterator neighborsBegin();
+    NeighborsIterator neighborsEnd();
 
     void assumeNetworkMessage(Program *program);
     void assumeNetworkMessage(Data *data);
@@ -54,6 +58,6 @@ private:
     NetworkDevice *mWrapped;
     NetworkAddress mAddress;
     Network *mNetwork;
-    AdjacencyList mAdjacencyList;
+    NeighborsList mNeighborsList;
 };
 

@@ -1,3 +1,6 @@
+#include <vector>
+#include <memory>
+#include <algorithm>
 #include "NetworkTest.h"
 #include "../src/PersonalComputer.h"
 #include "../src/Program.h"
@@ -21,20 +24,37 @@ TEST_F(NetworkTest, AddOnePersonalComputerOnStackTest)
 {
     PersonalComputer computer;
     EXPECT_EQ(UndefinedNetworkAddress, computer.address());
+    EXPECT_EQ(nullptr, computer.network());
 
     mNetwork->addDevice(&computer);
     EXPECT_NE(UndefinedNetworkAddress, computer.address());
+    EXPECT_EQ(mNetwork, computer.network());
+    EXPECT_TRUE(mNetwork->hasAddress(computer.address()));
 }
 
 TEST_F(NetworkTest, AddAndRemoveByNetworkMethodOnePersonalComputerOnHeapTest)
 {
     PersonalComputer *computer = new PersonalComputer;
     mNetwork->addDevice(computer);
-    EXPECT_EQ(mNetwork, computer->network());
+    NetworkAddress address = computer->address();
+    EXPECT_TRUE(mNetwork->hasAddress(address));
 
     mNetwork->removeDevice(computer);
     EXPECT_EQ(nullptr, computer->network());
+    EXPECT_FALSE(mNetwork->hasAddress(address));
     delete computer;
+}
+
+TEST_F(NetworkTest, AddAndRemoveByForceOnePersonalComputerOnHeapTest)
+{
+    PersonalComputer *computer = new PersonalComputer;
+    mNetwork->addDevice(computer);
+    NetworkAddress address = computer->address();
+    EXPECT_EQ(mNetwork, computer->network());
+    EXPECT_TRUE(mNetwork->hasAddress(address));
+
+    delete computer;
+    EXPECT_FALSE(mNetwork->hasAddress(address));
 }
 
 TEST_F(NetworkTest, SendToComputerSimpleProgramTest)
@@ -52,5 +72,103 @@ TEST_F(NetworkTest, SendToComputerSimpleProgramTest)
 
     mNetwork->sendMessageTo(&program, computer.address());
     EXPECT_EQ(1, program.mRunCounter);
+}
+
+TEST_F(NetworkTest, ChangeNetworkByPersonalComputerTest)
+{
+    Network secondaryNetwork;
+    PersonalComputer computer;
+
+    mNetwork->addDevice(&computer);
+    NetworkAddress address = computer.address();
+    EXPECT_TRUE(mNetwork->hasAddress(address));
+    EXPECT_FALSE(secondaryNetwork.hasAddress(address));
+
+    secondaryNetwork.addDevice(&computer);
+    EXPECT_EQ(&secondaryNetwork, computer.network());
+    NetworkAddress newAddress = computer.address();
+    EXPECT_NE(newAddress, address);
+
+    EXPECT_FALSE(mNetwork->hasAddress(address));
+    EXPECT_FALSE(secondaryNetwork.hasAddress(address));
+
+    EXPECT_FALSE(mNetwork->hasAddress(newAddress));
+    EXPECT_TRUE(secondaryNetwork.hasAddress(newAddress));
+}
+
+TEST_F(NetworkTest, NeighborsForNonexistingAddressTest)
+{
+    Network::NeighborsRange neighbors = mNetwork->neighbors(UndefinedNetworkAddress);
+    EXPECT_EQ(neighbors.second, neighbors.first);
+}
+
+TEST_F(NetworkTest, NeighborsForPCWithoutNeighborsTest)
+{
+    PersonalComputer pc1;
+    PersonalComputer pc2;
+    mNetwork->addDevice(&pc1);
+    mNetwork->addDevice(&pc2);
+
+    Network::NeighborsRange neighbors1 = mNetwork->neighbors(pc1.address());
+    EXPECT_EQ(neighbors1.second, neighbors1.first);
+
+    Network::NeighborsRange neighbors2 = mNetwork->neighbors(pc2.address());
+    EXPECT_EQ(neighbors2.second, neighbors2.first);
+}
+
+TEST_F(NetworkTest, LinkTwoPCTest)
+{
+    PersonalComputer pc1;
+    PersonalComputer pc2;
+    mNetwork->addDevice(&pc1);
+    mNetwork->addDevice(&pc2);
+
+    mNetwork->link(pc1.address(), pc2.address());
+
+    Network::NeighborsRange neighbors1 = mNetwork->neighbors(pc1.address());
+    EXPECT_EQ(pc2.address(), *neighbors1.first++);
+    EXPECT_EQ(neighbors1.second, neighbors1.first);
+
+    Network::NeighborsRange neighbors2 = mNetwork->neighbors(pc2.address());
+    EXPECT_EQ(pc1.address(), *neighbors2.first++);
+    EXPECT_EQ(neighbors2.second, neighbors2.first);
+}
+
+TEST_F(NetworkTest, LinkThreePCsInCircleAndRemoveByForceOneOfThemTest)
+{
+    int const numOfPCs = 3;
+
+    typedef std::shared_ptr<PersonalComputer> PCPtr;
+    typedef std::vector<PCPtr> PCs;
+    typedef Network::NeighborsRange Range;
+
+    PCs pcs;
+    pcs.push_back(PCPtr(new PersonalComputer));
+
+    mNetwork->addDevice(pcs[0].get());
+    for (int i = 1; i < numOfPCs; ++i)
+    {
+        pcs.push_back(PCPtr(new PersonalComputer));
+        mNetwork->addDevice(pcs[i].get());
+        mNetwork->link(pcs[i - 1]->address(), pcs[i]->address());
+    }
+    mNetwork->link(pcs[numOfPCs - 1]->address(), pcs[0]->address());
+
+    for (int i = 0; i < numOfPCs; ++i)
+    {
+        Range nbs = mNetwork->neighbors(pcs[i]->address());
+        EXPECT_EQ(numOfPCs - 1, nbs.second - nbs.first);
+        EXPECT_NE(nbs.second, std::find(nbs.first, nbs.second, pcs[(i + 1) % numOfPCs]->address()));
+    }
+
+    pcs.erase(pcs.begin());
+    int numOfPCsAfterRemoveOneOfThem = pcs.size();
+
+    for (int i = 0; i < numOfPCsAfterRemoveOneOfThem; ++i)
+    {
+        Range nbs = mNetwork->neighbors(pcs[i]->address());
+        EXPECT_EQ(numOfPCsAfterRemoveOneOfThem - 1, nbs.second - nbs.first);
+        EXPECT_NE(nbs.second, std::find(nbs.first, nbs.second, pcs[(i + 1) % numOfPCsAfterRemoveOneOfThem]->address()));
+    }
 }
 

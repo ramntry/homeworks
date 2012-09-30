@@ -5,6 +5,7 @@ OBJECTS_DIR = build/obj
 
 CONFIG -= qt
 CONFIG += thread
+CONFIG += debug
 QMAKE_CXXFLAGS += -std=c++0x
 
 LIBS += -L../../../libs/gtest/build -lgtest

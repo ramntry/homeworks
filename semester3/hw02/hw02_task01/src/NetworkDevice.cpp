@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Network.h"
 
 NetworkDevice::NetworkDevice()
@@ -7,11 +8,7 @@ NetworkDevice::NetworkDevice()
 
 NetworkDevice::~NetworkDevice()
 {
-    Network *nw = network();
-    if (nw != nullptr)
-    {
-        nw->removeDevice(this);
-    }
+    unlinkFromNetwork();
 }
 
 NetworkAddress NetworkDevice::address()
@@ -32,6 +29,15 @@ Network *NetworkDevice::network()
     return mNetworkDeviceWrapper->network();
 }
 
+void NetworkDevice::unlinkFromNetwork()
+{
+    Network *nw = network();
+    if (nw != nullptr)
+    {
+        nw->removeDevice(this);
+    }
+}
+
 void NetworkDevice::setNetworkDeviceWrapper(NetworkDeviceWrapper *wrapper)
 {
     mNetworkDeviceWrapper = wrapper;
@@ -41,10 +47,12 @@ NetworkDeviceWrapper::NetworkDeviceWrapper(Network *network, NetworkDevice *toWr
     : mWrapped(toWrap)
     , mNetwork(network)
 {
+    toWrap->unlinkFromNetwork();
     mWrapped->setNetworkDeviceWrapper(this);
 }
 
-NetworkDeviceWrapper::Pointer NetworkDeviceWrapper::create(Network *network, NetworkDevice *toWrap)
+NetworkDeviceWrapper::Pointer NetworkDeviceWrapper::create(Network *network
+        , NetworkDevice *toWrap)
 {
     return Pointer(new NetworkDeviceWrapper(network, toWrap));
 }
@@ -72,14 +80,33 @@ Network *NetworkDeviceWrapper::network()
     return mNetwork;
 }
 
-NetworkDeviceWrapper::AdjacencyIterator NetworkDeviceWrapper::adjacencyBegin()
+void NetworkDeviceWrapper::addLinkWith(NetworkAddress newNeighbor)
 {
-    return mAdjacencyList.begin();
+    NeighborsIterator end = neighborsEnd();
+    if (std::find(neighborsBegin(), end, newNeighbor) == end)
+    {
+        mNeighborsList.push_back(newNeighbor);
+    }
 }
 
-NetworkDeviceWrapper::AdjacencyIterator NetworkDeviceWrapper::adjacencyEnd()
+void NetworkDeviceWrapper::removeLinkWith(NetworkAddress neighbor)
 {
-    return mAdjacencyList.end();
+    NeighborsIterator end = neighborsEnd();
+    NeighborsIterator finded = std::find(neighborsBegin(), end, neighbor);
+    if (finded != end)
+    {
+        mNeighborsList.erase(finded);
+    }
+}
+
+NetworkDeviceWrapper::NeighborsIterator NetworkDeviceWrapper::neighborsBegin()
+{
+    return mNeighborsList.begin();
+}
+
+NetworkDeviceWrapper::NeighborsIterator NetworkDeviceWrapper::neighborsEnd()
+{
+    return mNeighborsList.end();
 }
 
 void NetworkDeviceWrapper::assumeNetworkMessage(Program *program)
