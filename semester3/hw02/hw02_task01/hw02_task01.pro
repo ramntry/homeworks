@@ -17,7 +17,7 @@ HEADERS += \
     test/test.h \
     test/NetworkTest.h \
     test/PersonalComputerTest.h \
-    test/ParserTest.h \
+    test/NetconfParserTest.h \
     src/Network.h \
     src/NetworkAddress.h \
     src/NetworkDevice.h \
@@ -25,18 +25,22 @@ HEADERS += \
     src/PersonalComputer.h \
     src/Program.h \
     src/Virus.h \
-    src/netconf/parser.h \
+    src/netconf/pc.h \
+    src/netconf/grammar.h \
+    src/netconf/NetconfParser.h \
+    src/netconf/Constructor.h \
 
 SOURCES += \
     test/test.cpp \
     test/NetworkTest.cpp \
     test/PersonalComputerTest.cpp \
-    test/ParserTest.cpp \
+    test/NetconfParserTest.cpp \
     src/Network.cpp \
     src/NetworkDevice.cpp \
     src/PersonalComputer.cpp \
     src/Program.cpp \
     src/Virus.cpp \
-    src/netconf/parser.cpp \
+    src/netconf/NetconfParser.cpp \
+    src/netconf/Constructor.cpp \
     main.cpp \
 
