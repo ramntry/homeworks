@@ -5,7 +5,7 @@ OBJECTS_DIR = build/obj
 
 CONFIG -= qt
 CONFIG += thread
-CONFIG += debug
+CONFIG += release
 QMAKE_CXXFLAGS += -std=c++0x
 
 LIBS += -L../../../libs/gtest/build -lgtest
@@ -23,6 +23,7 @@ HEADERS += \
     src/NetworkDevice.h \
     src/OS.h \
     src/PersonalComputer.h \
+    src/VirtualServer.h \
     src/Program.h \
     src/Virus.h \
     src/netconf/pc.h \
@@ -38,6 +39,7 @@ SOURCES += \
     src/Network.cpp \
     src/NetworkDevice.cpp \
     src/PersonalComputer.cpp \
+    src/VirtualServer.cpp \
     src/Program.cpp \
     src/Virus.cpp \
     src/netconf/NetconfParser.cpp \

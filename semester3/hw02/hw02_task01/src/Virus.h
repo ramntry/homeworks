@@ -8,5 +8,9 @@ public:
 
     virtual void run(PersonalComputer *computer);
     int numOfCopies();
+
+private:
+    static int idCounter_;
+    int id_;
 };
 

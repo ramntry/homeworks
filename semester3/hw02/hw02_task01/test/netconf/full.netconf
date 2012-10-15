@@ -1,8 +1,3 @@
-win_usr_4
-    - win_usr_5
-    - mac_usr_6
-    - mac_usr_7
-
 lin_moscow_srv * (
     lin_spb_srv
     win_usr_1
@@ -11,17 +6,22 @@ lin_moscow_srv * (
     win_usr_4
 )
 
+win_usr_4
+    - win_usr_5
+    - mac_usr_6
+    - mac_usr_7
+
 @ (
     lin_spb_srv
-    win_usr_8
-    lin_usr_9
-    win_usr_10
+    lin_usr_8
+    win_usr_9
+    mac_usr_10
 )
 
 # (
-    lin_usr_9
-    lin_usr_10
+    mac_usr_10
     lin_usr_11
     mac_usr_12
+    mac_usr_13
 )
 

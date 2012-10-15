@@ -8,6 +8,8 @@ protected:
    virtual void SetUp();
    virtual void TearDown();
 
+   VirtualServer *server_;
+   Network *network_;
    Constructor *constructor_;
    NetconfParser *parser_;
 };

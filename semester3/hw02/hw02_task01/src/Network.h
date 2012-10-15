@@ -8,7 +8,7 @@ public:
     typedef std::pair<NetworkDeviceWrapper::NeighborsIterator
             , NetworkDeviceWrapper::NeighborsIterator> NeighborsRange;
 
-    void addDevice(NetworkDevice *newDevice);
+    NetworkAddress addDevice(NetworkDevice *newDevice);
     void removeDevice(NetworkDevice *device);
     bool hasAddress(NetworkAddress address);
     void sendMessageTo(Program::Pointer program, NetworkAddress receiver);

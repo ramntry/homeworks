@@ -14,3 +14,7 @@ BOOST_FUSION_ADAPT_STRUCT(pc,
     (std::string, name)
 );
 
+inline bool operator <(pc const &lhs, pc const &rhs)
+{
+    return lhs.name < rhs.name;
+}

@@ -2,12 +2,13 @@
 
 NetworkAddress Network::mCurrentFreeAddress = 0;
 
-void Network::addDevice(NetworkDevice *newDevice)
+NetworkAddress Network::addDevice(NetworkDevice *newDevice)
 {
     NetworkAddress newAddress = getFreeAddress();
     NetworkDeviceWrapper::Pointer wrapper = NetworkDeviceWrapper::create(this, newDevice);
     wrapper->setAddress(newAddress);
     mAddressMap[newAddress] = wrapper;
+    return newAddress;
 }
 
 void Network::removeDevice(NetworkDevice *device)
