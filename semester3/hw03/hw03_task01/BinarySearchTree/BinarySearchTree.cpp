@@ -47,15 +47,22 @@ bool BinarySearchTree::empty() const
     return size() == 0;
 }
 
-BinarySearchTree::Node **BinarySearchTree::search(int value)
+BinarySearchTree::Node **BinarySearchTree::search(int value
+        , std::vector<Node *> *path)
 {
     Node **result = &root_;
     while (*result && value != (*result)->value) {
+        if (path) {
+            path->push_back(*result);
+        }
         if (value < (*result)->value) {
             result = &((*result)->left);
         } else {
             result = &((*result)->right);
         }
+    }
+    if (path) {
+        path->push_back(*result);
     }
     return result;
 }
@@ -119,57 +126,74 @@ bool BinarySearchTree::erase(int value)
     return true;
 }
 
-BinarySearchTree::Iterator::Iterator(BinarySearchTree const *bst)
+BinarySearchTree::Iterator::Iterator(BinarySearchTree *bst)
     : bst_(bst)
     , modcounter_(bst->modcounter_)
 {
     if (bst_->root_) {
-        path_.push(bst_->root_);
+        path_.push_back(bst_->root_);
         fallToLeft();
+        value_ = path_.back()->value;
     }
 }
 
 void BinarySearchTree::Iterator::fallToLeft()
 {
-    Node *currentNode = path_.top()->left;
+    Node *currentNode = path_.back()->left;
     while (currentNode) {
-        path_.push(currentNode);
+        path_.push_back(currentNode);
         currentNode = currentNode->left;
     }
 }
 
-BinarySearchTree::Iterator BinarySearchTree::iterator() const
+BinarySearchTree::Iterator BinarySearchTree::iterator()
 {
     return Iterator(this);
 }
 
-int BinarySearchTree::Iterator::value() const
+int BinarySearchTree::Iterator::value()
 {
-    return path_.top()->value;
+    refreshValueIfPossible();
+    return value_;
 }
 
-bool BinarySearchTree::Iterator::hasNext() const
+bool BinarySearchTree::Iterator::hasNext()
 {
-    return !path_.empty();
+    return refreshValueIfPossible();
+}
+
+bool BinarySearchTree::Iterator::refreshValueIfPossible()
+{
+    if(path_.empty()) {
+        return false;
+    }
+    value_ = path_.back()->value;
+    return true;
 }
 
 void BinarySearchTree::Iterator::next()
 {
-    Node *top = path_.top();
+    checkConsistency();
+    Node *top = path_.back();
     if (top->right) {
-        path_.push(top->right);
+        path_.push_back(top->right);
         fallToLeft();
     } else {
-        path_.pop();
-        while (!path_.empty() && path_.top()->right == top) {
-            top = path_.top();
-            path_.pop();
+        path_.pop_back();
+        while (!path_.empty() && path_.back()->right == top) {
+            top = path_.back();
+            path_.pop_back();
         }
     }
 }
 
-bool BinarySearchTree::Iterator::checkConsistency()
+void BinarySearchTree::Iterator::checkConsistency()
 {
-    return true;
+    if (bst_->modcounter_ == modcounter_) {
+        return;
+    }
+    modcounter_ = bst_->modcounter_;
+    path_.clear();
+    bst_->search(value(), &path_);
 }
 

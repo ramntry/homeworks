@@ -114,3 +114,57 @@ TEST_F(BinarySearchTreeTest, iterateWithoutChangingTest)
     EXPECT_EQ(test.size(), i);
 }
 
+TEST_F(BinarySearchTreeTest, iterateWithRemoveSimpleTest)
+{
+    std::vector<int> test = { 2, 1, 3 };
+    tree_->insert(&test[0], test.size());
+    BinarySearchTree::Iterator it = tree_->iterator();
+    tree_->erase(2);
+    for (int i = 1; it.hasNext(); it.next()) {
+        EXPECT_EQ(test[i++], it.value());
+    }
+}
+
+TEST_F(BinarySearchTreeTest, iterateWithRemoveTest)
+{
+    size_t const testSize = 1000;
+    std::vector<int> test(testSize);
+    fillWithRandom(test);
+    tree_->insert(&test[0], test.size());
+    sort(test.begin(), test.end());
+
+    BinarySearchTree::Iterator it = tree_->iterator();
+    int k = testSize / 4;
+    for (int i = 0; i < 2 * k; ++i) {
+        it.next();
+    }
+
+    for (int i = 0; i < k; ++i) {
+        tree_->erase(test[i]);
+    }
+    for (int i = 2 * k; it.hasNext(); it.next()) {
+        EXPECT_EQ(test[i++], it.value());
+    }
+}
+
+TEST_F(BinarySearchTreeTest, iterateWithInsertTest)
+{
+    size_t const testSize = 1000;  // must be even
+    std::vector<int> test(testSize);
+    fillWithRandom(test);
+    tree_->insert(&test[0], test.size() / 2);
+
+    BinarySearchTree::Iterator it = tree_->iterator();
+    for (size_t i = 0; i < it.hasNext() && test.size() / 4; ++i) {
+        it.next();
+    }
+
+    tree_->insert(&test[test.size() / 2], test.size() / 2);
+    sort(test.begin(), test.end());
+    std::vector<int>::iterator expectedIt = lower_bound(test.begin(), test.end(), it.value());
+
+    for (; it.hasNext(); it.next()) {
+        EXPECT_EQ(*expectedIt++, it.value());
+    }
+}
+

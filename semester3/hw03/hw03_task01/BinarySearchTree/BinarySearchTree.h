@@ -1,6 +1,6 @@
 #pragma once
 #include <cstddef>
-#include <stack>
+#include <vector>
 
 class BinarySearchTree
 {
@@ -18,12 +18,12 @@ public:
     void insert(int *array, size_t size);
     bool erase(int value);
 
-    Iterator iterator() const;
+    Iterator iterator();
 
 private:
     struct Node;
 
-    Node **search(int value);
+    Node **search(int value, std::vector<Node *> *path = NULL);
     void eraseFrom(Node **cursor);
 
     std::size_t size_;
@@ -34,18 +34,20 @@ private:
 class BinarySearchTree::Iterator
 {
 public:
-    Iterator(BinarySearchTree const *bst);
+    Iterator(BinarySearchTree *bst);
 
-    int value() const;
-    bool hasNext() const;
+    int value();
+    bool hasNext();
     void next();
 
 private:
     void fallToLeft();
-    bool checkConsistency();
+    void checkConsistency();
+    bool refreshValueIfPossible();
 
-    BinarySearchTree const *bst_;
-    std::stack<Node *> path_;
+    BinarySearchTree *bst_;
+    std::vector<Node *> path_;
+    int value_;
     unsigned long long modcounter_;
 };
 
