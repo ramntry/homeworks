@@ -21,6 +21,18 @@ void BinarySearchTreeTest::fillWithRandom(std::vector<int> &v)
     }
 }
 
+void BinarySearchTreeTest::fillFromTo(int from, int to)
+{
+    if (to <= from) {
+        return;
+    }
+    int variability = (to - from) / 4;
+    int border = from + variability + rand() % (2 * variability + 1);
+    tree_->insert(border);
+    fillFromTo(from, border);
+    fillFromTo(border + 1, to);
+}
+
 TEST_F(BinarySearchTreeTest, justCreateEmptyAndSizeMethodsTest)
 {
     EXPECT_EQ(0UL, tree_->size());
@@ -166,5 +178,70 @@ TEST_F(BinarySearchTreeTest, iterateWithInsertTest)
     for (; it.hasNext(); it.next()) {
         EXPECT_EQ(*expectedIt++, it.value());
     }
+}
+
+TEST_F(BinarySearchTreeTest, removePointeeByIteratorTest)
+{
+    tree_->insert(2);
+    tree_->insert(1);
+    tree_->insert(3);
+    BinarySearchTree::Iterator it1 = tree_->iterator();
+    BinarySearchTree::Iterator it2 = tree_->iterator();
+    it1.next();
+    tree_->erase(2);
+    it2.next();
+    EXPECT_EQ(2, it1.value());
+    EXPECT_EQ(3, it2.value());
+}
+
+TEST_F(BinarySearchTreeTest, iterateComplexTest)
+{
+    size_t const testSize = 20000;
+    fillFromTo(0, testSize);
+
+    BinarySearchTree::Iterator it1 = tree_->iterator();
+    BinarySearchTree::Iterator it2 = tree_->iterator();
+    BinarySearchTree::Iterator it3 = tree_->iterator();
+    for (int i = 0; i < 3000; ++i) {
+        it1.next();
+        it2.next();
+    }
+    for (int i = 0; i < 6000; ++i) {
+        it3.next();
+    }
+    EXPECT_EQ(3000, it1.value());
+    EXPECT_EQ(3000, it2.value());
+    EXPECT_EQ(6000, it3.value());
+
+    for (int i = 2000; i < 7000; ++i) {
+        tree_->erase(i);
+    }
+    EXPECT_EQ(3000, it1.value());
+    EXPECT_EQ(3000, it2.value());
+    EXPECT_EQ(6000, it3.value());
+
+    it2.next();
+    it3.next();
+    EXPECT_EQ(7000, it2.value());
+    EXPECT_EQ(it2.value(), it3.value());
+
+    for (int i = 2000; i < 4000; ++i) {
+        tree_->insert(i);
+    }
+
+    for (int i = 3000; i < 4000; ++i) {
+        EXPECT_EQ(i, it1.value());
+        it1.next();
+    }
+    EXPECT_EQ(7000, it2.value());
+    EXPECT_EQ(it2.value(), it3.value());
+    EXPECT_EQ(it2.value(), it1.value());
+
+    it1.next();
+    it2.next();
+    it3.next();
+    EXPECT_EQ(7001, it2.value());
+    EXPECT_EQ(it2.value(), it3.value());
+    EXPECT_EQ(it2.value(), it1.value());
 }
 

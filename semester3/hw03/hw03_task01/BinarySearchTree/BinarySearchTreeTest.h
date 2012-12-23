@@ -11,6 +11,7 @@ protected:
     void TearDown();
 
     void fillWithRandom(std::vector<int> &v);
+    void fillFromTo(int from, int to);
 
     BinarySearchTree *tree_;
 };

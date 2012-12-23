@@ -153,7 +153,6 @@ BinarySearchTree::Iterator BinarySearchTree::iterator()
 
 int BinarySearchTree::Iterator::value()
 {
-    refreshValueIfPossible();
     return value_;
 }
 
@@ -185,6 +184,7 @@ void BinarySearchTree::Iterator::next()
             path_.pop_back();
         }
     }
+    refreshValueIfPossible();
 }
 
 void BinarySearchTree::Iterator::checkConsistency()
@@ -194,6 +194,10 @@ void BinarySearchTree::Iterator::checkConsistency()
     }
     modcounter_ = bst_->modcounter_;
     path_.clear();
-    bst_->search(value(), &path_);
+    bst_->search(value_, &path_);
+
+    if (path_.back() == NULL) {
+        path_.pop_back();
+    }
 }
 
