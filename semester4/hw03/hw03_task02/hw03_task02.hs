@@ -13,7 +13,7 @@ takePowersOfTwo = (flip take) powersOfTwo
 
 referenceTakePowersOfTwo :: Int -> [Integer]
 referenceTakePowersOfTwo n | n < 0     = error "n must be nonnegative"
-                 | otherwise = helper 1 n
+                           | otherwise = helper 1 n
     where helper _            0       = []
           helper currentPower counter = currentPower : helper (currentPower * 2) (counter - 1)
 
