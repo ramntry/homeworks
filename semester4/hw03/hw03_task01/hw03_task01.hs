@@ -10,9 +10,11 @@ referenceFunc x l = map (\y -> y * x) l
 -- func x l = map (\y -> (*) x y) l     by removing some syntactic sugar
 -- func x l = map ((*) x) l             by eta conversion
 -- func x   = map ((*) x)               by eta conversion again
--- func x   = map (x *)                 by returning the syntactic sugar
+-- func x   = (.) map (*) x             by involving composition
+-- func     = (.) map (*)               by yet another eta conversion
+-- func     =  map . (*)                by returning the syntactic sugar
 
 func :: (Num a) => a -> [a] -> [a]
-func x = map (x *)
+func = map . (*)
 
 main = quickCheck ((\x l -> referenceFunc x l == func x l) :: Int -> [Int] -> Bool)
